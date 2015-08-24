@@ -1,0 +1,808 @@
+
+<div>
+	<div>
+		<div class="accordion" id="accordion2">
+			<div class="accordion-group">
+				<div class="accordion-heading">
+					<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">
+						<b>List of Relations</b>
+					</a>
+				</div>
+				<div id="collapseOne" class="accordion-body collapse">
+					<div class="accordion-inner">
+						<div class="container-fluid" data-ng-init="">
+							<div>
+							    <button class="btn btn-primary btn-mini" 
+							    	data-ng-click="nbdb.relLst.rmAutoRel = !nbdb.relLst.rmAutoRel">
+							    	{{!nbdb.relLst.rmAutoRel?"Show all":"Hide generated"}}
+						    	</button>
+						    	<button class="btn btn-primary btn-mini"
+						    		data-ng-click="expandAllRel()">
+						    		{{!nbdb.uiTable5_flag? "Expand All" : "Compact All"}}
+						    	</button>
+						    	
+							</div>
+							<div>
+								<select class="span3 margin-bottom-zero" 
+									data-ng-model="nbdb.relLst.search_domain"
+									data-ng-options="v for v in domain"	>
+									<option value="">Search Domain</option>
+								</select>
+
+							    <input data-ng-model="nbdb.relLst.search_name"
+							        type="text"
+							        class="input  search-query span2"
+							        placeholder="Search Name">
+							    <input data-ng-model="nbdb.relLst.search_inp"
+							        type="text"
+							        class="input  search-query span2"
+							        placeholder="Search Inputs">
+
+							    <input data-ng-model="nbdb.relLst.search_out"
+							        type="text"
+							        class="input  search-query span2"
+							        placeholder="Search Outputs">
+
+						        <input data-ng-model="nbdb.relLst.search_cond"
+						            type="text"
+						            class="input  search-query span3"
+						            placeholder="Search Conditions">
+						            
+						        <button class="btn btn-primary btn-mini"
+						        	data-ng-click="nbdb.relLst={}">
+						        	Reset
+						        </button>
+
+							</div>
+							<div class="div-big-scroll div-space" id="dbRels">
+								<table class="table table-condensed table-hover table-striped table-bordered" 
+									data-ng-init="nbdb.uiTable5={}">
+									<thead>
+										<th class="td-center">Index</th>
+										<th>Name</th>
+										<th class="td-center">Operations</th>
+									</thead>
+									<tbody>
+										<tr data-ng-repeat="rel in TmplDb().inf.relation|filterSortName|filterName:nbdb.relLst.search_name|filterInput:nbdb.relLst.search_inp|filterOutput:nbdb.relLst.search_out|filterCondName:nbdb.relLst.search_cond|filterRelDomain:nbdb.relLst.search_domain|rmAutoRel: !!nbdb.relLst.rmAutoRel|withIndex" data-ng-init="renderMaths('dbRels')">
+											<td class="td-center">{{rel.idx}}</td>
+											<td>
+												<div class="span12">
+													<span>{{rel.name}}</span>
+													<span>
+														<a data-ng-click="hdlClick(nbdb.uiTable5,rel)">
+															<span data-ng-show="!nbdb.uiTable5[rel.id]">
+																<i class="icon-circle-arrow-down"></i>
+															</span>
+															<span data-ng-hide="!nbdb.uiTable5[rel.id]">
+																<i class="icon-circle-arrow-up"></i>
+															</span>
+														</a>
+													</span>
+												</div>
+												<div class="span11 div-details" 
+													data-ng-if="!!nbdb.uiTable5[rel.id]" 
+													data-ng-click="hdlClick(nbdb.uiTable5,rel)"
+													data-ng-animate="'example'">
+													<div class="condAlign" data-ng-show="!!rel.condName">
+														Condition : {{TmplDb().condDb[rel.condName].name}}
+													</div>
+													<div class="condAlign" data-ng-show="!!rel.desc">
+														Description : {{rel.desc}}
+													</div>
+													<div class="condAlign" >
+														IsBlkBox : {{rel.isBlkBox}}
+													</div>
+													<p>
+														<ul data-ng-repeat="inp in rel.inputs" class="li-inputs">
+															<li>
+																<span data-ng-class="{false:'', true:'vector'}[!!rel.tree().getItem(inp.quantity).get().isVector]">
+																	<i class="icon-forward"></i>
+																	{{rel.tree().getItem(inp.quantity).get().name}}  
+																</span>
+																<span class="entityName " >
+																	{{extractEntityName(inp.quantity)}}
+																</span>
+						                                        <span class="symbol" data-ng-show="!!inp.symbol">
+						                                            <span>\({{inp.symbol}}\)</span>
+						                                        </span>
+															</li>
+														</ul>
+													</p>
+													<p>
+														<ul data-ng-repeat="out in rel.outputs" class="li-outputs">
+															<li>
+																<span data-ng-class="{false:'', true:'vector'}[!!rel.tree().getItem(out.quantity).get().isVector]">
+																	<i class="icon-backward"></i> 
+																	{{rel.tree().getItem(out.quantity).get().name}} 
+																</span>
+																<span class="entityName " >
+																	{{extractEntityName(out.quantity)}}
+																</span>
+						                                        <span class="symbol" data-ng-show="!!out.symbol">
+						                                            <span>\({{out.symbol}}\)</span>
+						                                        </span>
+																<span class="eqnId"
+																	data-ng-show="out.eqn">\({{out.eqn}}\)
+																</span>
+						                                        <span class="symbol" data-ng-show="!!out.eqn">
+						                                            <span>\({{rel.tree().eqnDb[out.eqn]}}\)</span>
+						                                        </span>
+															</li>
+														</ul>	
+													</p>
+												</div>
+											</td>
+											<td class="td-center">
+												<span class="icon-padding">
+													<a  data-ng-click="rmDbRel(rel)" 
+														ui-jq="tooltip" 
+														ui-options="{placement:'bottom'}"  
+														title="Delete Relation">
+														<i class="icon-remove-sign"></i>
+													</a>
+												</span>
+												<span class="icon-padding">
+													<a data-ng-click="editDbRelShow('inf',rel)"
+														ui-jq="tooltip" 
+														ui-options="{placement:'bottom'}" 
+														title="Edit Relation">
+														<i class="icon-edit"></i>
+													</a>
+												</span>
+												<span class="icon-padding">
+													<a data-ng-click="genCyclicRel(rel.id)"
+														ui-jq="tooltip" 
+														ui-options="{placement:'bottom'}" 
+														title="Generate Cyclic Relations">
+														<i class="icon-gift"></i>
+													</a>
+												</span>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div id="newRelInf" class="well" 
+		data-ng-if="!!nbdb.editRel && !!nbdb.editRel.inf && !!nbdb.editRel.inf.show">
+		<button type="button" class="close" 
+			ui-jq="tooltip" ui-options="{placement:'bottom'}" title="Cancel Edit"
+			data-ng-click="cancelEditR('inf')">
+			&times;
+		</button>
+		<label><b>Edit Relation</b></label>
+		<div>
+			Number of bodies : 
+			
+			<select data-ng-model="nbdb.newR.inf.build.numBody" 
+				data-ng-change="buildRelQnty()" 
+				data-ng-options="v.value as v.label for v in numBody"	required >
+				<option value="0">Num Body</option>
+			</select>
+		</div>
+		<div class="container-fluid">
+			<form  name="newRInfform" class="form-horizontal" >
+
+				<div class="row-fluid" data-ng-init="buildRelQnty()"
+					data-bs-trigger-watch="TmplDb().changeCount.Q + TmplDb().changeCount.body.Qnty + TmplDb().changeCount.inf.Qnty" 
+					data-bs-trigger-cb-data="" 
+					data-bs-trigger-cb="buildRelQnty" bs-trigger>
+					<div class="span6">
+						<div class="well">
+							<label>Select Inputs</label>
+							<div>
+							    <input data-ng-model="nbdb.relEInp.search_name"
+							        type="text"
+							        class="input-medium  search-query span4"
+							        placeholder="Search Name">
+
+							    <select class="span4 margin-bottom-zero" 
+							    	data-ng-model="nbdb.relEInp.search_domain"
+							    	data-ng-options="v for v in domain"	>
+							    	<option value="">Search Domain</option>
+							    </select>
+
+							    <span class="btn btn-primary btn-mini"
+							    	data-ng-click="nbdb.relEInp={}">
+							    	Reset
+							    </span>
+							</div>
+							<div class="div-small-scroll">
+								<table class="table table-condensed table-hover">
+									<tr data-ng-repeat="obj in nbdb.newR.inf.list.inputs|rmHidden|filterNameXPut:nbdb.relEInp.search_name|filterQntyDomainX:nbdb.relEInp.search_domain"
+										data-ng-mouseover="nbdb.newR.inf.displayQInfInp = obj.obj"> 
+										<td>
+											<span class="btn btn-primary btn-mini"
+												data-ng-click="addQ2RInp(obj,'inf')">
+												Add
+											</span> 
+											<span>{{obj.obj.get().name}}</span>
+											<span class="entityName" >
+												{{entityName(obj.src)}}
+											</span>
+										</td>
+									</tr>
+								</table>
+							</div>
+						</div>
+					</div>														
+					<div class="span6">		
+						<div class="row-fluid">														
+							<div class="span12 well well-small" data-ng-show="!!nbdb.newR.inf.displayQInfInp">
+								<label><b>Quantity</b></label>
+								<div>Name: {{nbdb.newR.inf.displayQInfInp.get().name}} </div>
+								<div>Description: {{nbdb.newR.inf.displayQInfInp.get().desc}} </div>
+								<div>Vector: {{nbdb.newR.inf.displayQInfInp.get().isVector}} </div>
+								<div>Non Negative: {{nbdb.newR.inf.displayQInfInp.get().isNonNeg}} </div>
+								<div>Domain: {{nbdb.newR.inf.displayQInfInp.get().domain}}</div>
+								<div>Alias Group: 
+									<span data-ng-repeat="rId in TmplDb().qAliasGrpDb[nbdb.newR.inf.displayQInfInp.get().aliasGrp]">{{TmplDb().qdb[rId.id].name}}, </span>
+								</div>
+							</div>
+						</div>
+						<div class="row-fluid">
+							<div class="span12 alert alert-error div-micro-scroll" 
+								data-ng-show="!!nbdb.newR.inf.matchInp && (nbdb.newR.inf.matchInp.length > 0)" >
+								<label><b>Warning!! Duplicate found</b></label>
+								<table class="table table-condensed table-hover">
+									<tr data-ng-repeat="obj in nbdb.newR.inf.matchInp">
+										<td>{{obj.name}}</td>
+									</tr>
+								</table>
+							</div>
+						</div>
+
+						<div class="row-fluid">
+							<div class="span12">
+								<div class=" well ">
+									<label>Input </label>
+									<table class="table table-condensed table-hover"> 
+										<tr>
+											<th>Inputs</th>
+											<th><i class="icon-remove-sign"></i></th>
+										</tr>
+										<tr data-ng-repeat="obj in nbdb.newR.inf.build.inputs">
+											
+											<td>
+												<span>{{TmplDb().getItem(obj.quantity).get().name}}</span>
+												<span class="entityName " >
+													{{extractEntityName(obj.quantity)}} 
+												</span>
+												<span data-ng-if="extractEntityName(obj.quantity) === 'Component'" 
+													data-ng-class="{false:'ng-invalid', true:''}[!!nbdb.newR.inf.build.numBody]">
+													-
+													<input type="number" class="input-mini" 
+														min="1" max="{{nbdb.newR.inf.build.numBody}}" data-ng-model="obj.body">
+												</span>
+											</td>
+											<td>
+												<a  data-ng-click="rmQ4RInp(obj.quantity,'inf')">
+													<i class="icon-remove"></i>
+												</a>
+											</td>
+									  	</tr>
+								  	</table>
+								  	<label> Conditions (Organs & Parts)</label>
+								  	
+						  		  	<div>
+						  	  			<div>
+						  	  			    <label>Name</label>
+						  	  			    <div>
+						  	  			    	<select 
+						  	  			    		data-ng-model="nbdb.newR.inf.build.condName"
+						  	  			    		data-ng-options="cond.id as cond.name for cond in TmplDb().condDb|filterSortName"
+						  	  			    		data-ng-change="condDisplayFn(nbdb.newR.inf,nbdb.newR.inf.build.condName)" required>
+						  	  			    		<option value="">None</option>
+						  	  			    	</select>
+						  	  			    </div>
+						  	  			</div>
+						  	  			<div  
+						  	  				data-ng-show="!!length(nbdb.newR.inf.condDisp.property)">
+						  	  			    <label >Properties</label>
+						  	  			    <div>
+						  	  			        <div>
+						  	  			            <table class="table table-condensed table-hover table-striped table-bordered" >
+						  	  			                <thead>
+						  	  			                    <tr>
+						  	  			                        <td><b>Organ Name</b></td>
+						  	  			                    </tr>
+						  	  			                </thead>
+						  	  			                <tbody>
+						  	  			                    <tr data-ng-repeat="(kk,vv) in nbdb.newR.inf.condDisp.property"> 
+						  	  			                        <td>
+						  	  			                            <span>{{TmplDb().condAttrsDb[kk].name}} = {{vv}}</span>
+						  	  			                        </td>
+						  	  			                    </tr>
+						  	  			                </tbody>
+						  	  			            </table>
+						  	  			        </div>
+						  	  			    </div>
+						  	  			</div>
+						  	  			<div  
+						  	  				data-ng-show="!!nbdb.newR.inf.condDisp.has.numParts">
+						  	  			    <label>Has parts</label>
+						  	  			    <div >
+						  	  			        <div class="well">
+						  	  			            Number of parts : {{nbdb.newR.inf.condDisp.has.numParts}}
+						  	  			        </div>
+						  	  			        <div>
+						  	  			            <table class="table table-condensed table-striped table-bordered">
+						  	  			                <thead>
+						  	  			                    <tr>
+						  	  			                        <th class="td-center"><b>Index</b></th>
+						  	  			                        <th class="td-center"><b>Organs</b></th>
+						  	  			                    </tr>
+						  	  			                </thead>
+						  	  			                <tbody>
+						  	  			                    <tr data-ng-repeat="idx in range(1,nbdb.newR.inf.condDisp.has.numParts)">
+						  	  			                        <td class="td-center">Part-{{idx}}</td>
+						  	  			                        <td class="td-center"><div>{{TmplDb().condDb[nbdb.newR.inf.condDisp.has.parts[idx]].name}}</div></td>
+						  	  			                    </tr>
+						  	  			                </tbody>
+						  	  			            </table>
+						  	  			        </div>
+						  	  			    </div>
+						  	  			</div>
+						  		  	</div>
+								  	
+								  	
+							   	</div>
+						   	</div>
+						</div>
+					</div> 
+				</div>														
+				
+				<div data-ng-show="!!nbdb.newR.inf.build && !isUniqueR(nbdb.newR.inf.build)">
+					<div><b>Duplicate relation!!</b></div>
+				</div>
+				<div data-ng-show="!!nbdb.newR.inf.build && !!isUniqueR(nbdb.newR.inf.build)">
+					<div class="row-fluid">
+						<div class="span6">
+							<div class="well">
+								<label>Select Outputs</label>
+								<div>
+								    <input data-ng-model="nbdb.relEOut.search_name"
+								        type="text"
+								        class="input-medium  search-query span4"
+								        placeholder="Search Name">
+
+								    <select class="span4 margin-bottom-zero" 
+								    	data-ng-model="nbdb.relEOut.search_domain"
+								    	data-ng-options="v for v in domain"	>
+								    	<option value="">Search Domain</option>
+								    </select>
+
+								    <span class="btn btn-primary btn-mini"
+								    	data-ng-click="nbdb.relEOut={}">
+								    	Reset
+								    </span>
+                                        
+								</div>
+								<div class="div-small-scroll">
+									<table class="table table-condensed table-hover">
+										<tr data-ng-repeat="obj in nbdb.newR.inf.list.outputs|rmHidden|rmHidden|filterNameXPut:nbdb.relEOut.search_name|filterQntyDomainX:nbdb.relEOut.search_domain"
+										data-ng-mouseover="nbdb.newR.inf.displayQInfOut = obj.obj">
+											<td>
+												<span class="btn btn-primary btn-mini"
+													data-ng-click="addQ2ROut(obj,'inf')">
+													Add
+												</span>
+												<span>{{obj.obj.get().name}}</span>
+												<span class="entityName " >
+												   {{entityName(obj.src)}} 
+												</span>
+											</td>
+										</tr>
+									</table>
+								</div>
+							</div>	
+						</div>
+						<div class="span6">
+							<div class="row-fluid">
+								<div class="span12 well well-small" data-ng-show="!!nbdb.newR.inf.displayQInfOut">
+									<label><b>Quantity</b></label>
+									<div>Name: {{nbdb.newR.inf.displayQInfOut.get().name}} </div>
+									<div>Description: {{nbdb.newR.inf.displayQInfOut.get().desc}} </div>
+									<div>Vector: {{nbdb.newR.inf.displayQInfOut.get().isVector}} </div>
+									<div>Non Negative: {{nbdb.newR.inf.displayQInfOut.get().isNonNeg}} </div>
+									<div>Domain: {{nbdb.newR.inf.displayQInfOut.get().domain}}</div>
+									<div>Alias Group: 
+										<span data-ng-repeat="rId in TmplDb().qAliasGrpDb[nbdb.newR.inf.displayQInfOut.get().aliasGrp]">{{TmplDb().qdb[rId.id].name}}, </span>
+									</div>
+								</div>	
+							</div>
+
+							<div class="row-fluid">
+								<div class="span12">
+									<div class=" well ">
+										<label>Outputs</label>
+										<table class="table table-condensed table-hover">
+											<tr>
+												<th>Quantity</th> 
+												<th><i class="icon-remove-sign"></i></th>
+											</tr>
+											<tr data-ng-repeat="out in nbdb.newR.inf.build.outputs">
+												
+												<td>
+													<span>{{TmplDb().getItem(out.quantity).get().name}}</span>
+													<span class="entityName " >
+														{{extractEntityName(out.quantity)}}
+													</span>
+												</td>
+												<td>
+													<a data-ng-click="rmQ4ROut(out.quantity, 'inf')">
+														<i class="icon-remove"></i>
+													</a>
+												</td>
+											</tr>
+										</table>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<div class="row-fluid">
+						<div class="span6" data-ng-show="!!length(nbdb.newR.inf.build.inputs)">
+							<div class="div-space">
+							  	<div class="input-prepend">
+									<span class="add-on">Name</span>
+									<input class="input-large addition"
+										data-ng-readonly='false'
+										type="text"
+										data-ng-model="nbdb.newR.inf.build.name">
+								</div>
+							  	<div class="input-prepend descAlign">
+									<span class="add-on">Description</span>
+									<input class="input-large addition"
+										type="text"
+										data-ng-model="nbdb.newR.inf.build.desc">
+								</div>
+							  	<div class="input-prepend descAlign">
+									<span class="add-on">IsBlackBox</span>
+	                                <select data-ng-model="nbdb.newR.inf.build.isBlkBox"
+									    data-ng-options="v for v in bool"
+										required></select>
+								</div>
+							</div>																  
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+		<div class="myModal-footer">
+			<div data-ng-click="cancelEditR('inf')" class="btn" >Close</div>
+			<div data-ng-click="saveEditR('inf')" class="btn btn-primary" 
+			    data-ng-show="newRInfform.$valid && length(nbdb.newR.inf.build.inputs) && 
+                    length(nbdb.newR.inf.build.outputs) && (!!isUniqueR(nbdb.newR.inf.build))
+                    ">Edit </div>
+		</div>
+	</div>
+
+	<div id="newRelInf" class="well "
+		data-ng-if="!(!!nbdb.editRel && !!nbdb.editRel.inf && !!nbdb.editRel.inf.show)">
+		<label><b>Create Relation</b></label>
+		<div>
+			Number of bodies : 
+			<select data-ng-model="nbdb.newR.inf.build.numBody" 
+				data-ng-change="buildRelQnty()" 
+				data-ng-options="v.value as v.label for v in numBody"	required >
+				<option value="0">Num Body</option>
+			</select>
+
+			<span data-ng-show="!nbdb.newR.inf.build.numBody" 
+				class="alert alert-info pad4">
+				Relation will be also available in the body section of DB
+			</span>
+		</div>
+		<div class="container-fluid">
+			<form  name="newRInfform" class="form-horizontal" >
+                <!--No buttons inside forms. -->
+				<div class="row-fluid" 
+					data-ng-init="buildRelQnty()"
+					data-bs-trigger-watch="TmplDb().changeCount.Q + TmplDb().changeCount.body.Qnty + TmplDb().changeCount.inf.Qnty" 
+					data-bs-trigger-cb-data="" 
+					data-bs-trigger-cb="buildRelQnty" bs-trigger>
+					<div class="span6">
+						<div class="well ">
+							<label>Select Inputs</label>
+							<div>
+							    <input data-ng-model="nbdb.relCInp.search_name"
+							        type="text"
+							        class="input-medium  search-query span4"
+							        placeholder="Search Name">
+
+								    <select class="span4 margin-bottom-zero" 
+								    	data-ng-model="nbdb.relCInp.search_domain"
+								    	data-ng-options="v for v in domain"	>
+								    	<option value="">Search Domain</option>
+								    </select>
+
+								    <span class="btn btn-primary btn-mini"
+								    	data-ng-click="nbdb.relCInp={}">
+								    	Reset
+								    </span>
+
+							</div>
+							<div class="div-small-scroll">
+								<table class="table table-condensed table-hover">
+									<tr data-ng-repeat="obj in nbdb.newR.inf.list.inputs|rmHidden|filterNameXPut:nbdb.relCInp.search_name|filterQntyDomainX:nbdb.relCInp.search_domain"
+										data-ng-mouseover="nbdb.newR.inf.displayQInfInp = obj.obj"> 
+										<td>
+											<span class="btn btn-primary btn-mini"
+												data-ng-click="addQ2RInp(obj,'inf')">
+												Add
+											</span> 
+											<span>{{obj.obj.get().name}}</span>
+											<span class="entityName" >
+												{{entityName(obj.src)}}
+											</span>
+										</td>
+									</tr>
+								</table>
+							</div>
+						</div>
+					</div>														
+					<div class="span6">		
+						<div class="row-fluid">														
+							<div class="span12 well well-small" data-ng-show="!!nbdb.newR.inf.displayQInfInp">
+								<label><b>Quantity</b></label>
+								<div>Name: {{nbdb.newR.inf.displayQInfInp.get().name}} </div>
+								<div>Description: {{nbdb.newR.inf.displayQInfInp.get().desc}} </div>
+								<div>Vector: {{nbdb.newR.inf.displayQInfInp.get().isVector}} </div>
+								<div>Non Negative: {{nbdb.newR.inf.displayQInfInp.get().isNonNeg}} </div>
+								<div>Domain: {{nbdb.newR.inf.displayQInfInp.get().domain}}</div>
+								<div>Alias Group: 
+									<span data-ng-repeat="rId in TmplDb().qAliasGrpDb[nbdb.newR.inf.displayQInfInp.get().aliasGrp]">{{TmplDb().qdb[rId.id].name}}, </span>
+								</div>
+							</div>
+						</div>
+						<div class="row-fluid">
+							<div class="span12 alert alert-error div-micro-scroll" 
+								data-ng-show="!!nbdb.newR.inf.matchInp && (nbdb.newR.inf.matchInp.length > 0)" >
+								<label><b>Warning!! Duplicate found</b></label>
+								<table class="table table-condensed table-hover">
+									<tr data-ng-repeat="obj in nbdb.newR.inf.matchInp">
+										<td>{{obj.name}}</td>
+									</tr>
+								</table>
+							</div>
+						</div>
+						<div class="row-fluid">
+							<div class="span12">
+								<div class=" well ">
+									<label>Input </label>
+									<table class="table table-condensed table-hover"> 
+										<tr>
+											<th>Inputs</th>
+											<th><i class="icon-remove-sign"></i></th>
+										</tr>
+										<tr data-ng-repeat="obj in nbdb.newR.inf.build.inputs">
+											
+											<td>
+												<span>{{TmplDb().getItem(obj.quantity).get().name}}</span>
+												<span class="entityName " >
+													{{extractEntityName(obj.quantity)}} 
+												</span>
+												<span data-ng-if="extractEntityName(obj.quantity) === 'Component'">
+													-
+													<input type="number" class="input-mini" data-ng-init="obj.body=1"
+														min="1" max="{{nbdb.newR.inf.build.numBody}}" data-ng-model="obj.body">
+												</span>
+											</td>
+											<td>
+												<a  data-ng-click="rmQ4RInp(obj.quantity,'inf')">
+													<i class="icon-remove"></i>
+												</a>
+											</td>
+									  	</tr>
+								  	</table>
+
+								  	<label> Conditions (Organs & Parts)</label>
+								  	
+						  		  	<div>
+						  	  			<div>
+						  	  			    <label>Name</label>
+						  	  			    <div>
+						  	  			    	<select 
+						  	  			    		data-ng-model="nbdb.newR.inf.build.condName"
+						  	  			    		data-ng-options="cond.id as cond.name for cond in TmplDb().condDb|filterSortName"
+						  	  			    		data-ng-change="condDisplayFn(nbdb.newR.inf,nbdb.newR.inf.build.condName)" required>
+						  	  			    		<option value="">None</option>
+						  	  			    	</select>
+						  	  			    </div>
+						  	  			</div>
+						  	  			<div 
+						  	  				data-ng-show="!!length(nbdb.newR.inf.condDisp.property)">
+						  	  			    <label>Properties</label>
+						  	  			    <div>
+						  	  			        <div>
+						  	  			            <table class="table table-condensed table-hover table-striped table-bordered" >
+						  	  			                <thead>
+						  	  			                    <tr>
+						  	  			                        <td><b>Organ Name</b></td>
+						  	  			                    </tr>
+						  	  			                </thead>
+						  	  			                <tbody>
+						  	  			                    <tr data-ng-repeat="(kk,vv) in nbdb.newR.inf.condDisp.property"> 
+						  	  			                        <td>
+						  	  			                            <span>{{TmplDb().condAttrsDb[kk].name}} = {{vv}}</span>
+						  	  			                        </td>
+						  	  			                    </tr>
+						  	  			                </tbody>
+						  	  			            </table>
+						  	  			        </div>
+						  	  			    </div>
+						  	  			</div>
+						  	  			<div 
+						  	  				data-ng-show="!!nbdb.newR.inf.condDisp.has.numParts">
+						  	  			    <label >Has parts</label>
+						  	  			    <div >
+						  	  			        <div class="well">
+						  	  			            Number of parts : {{nbdb.newR.inf.condDisp.has.numParts}}
+						  	  			        </div>
+						  	  			        <div>
+						  	  			            <table class="table table-condensed table-striped table-bordered">
+						  	  			                <thead>
+						  	  			                    <tr>
+						  	  			                        <th class="td-center"><b>Index</b></th>
+						  	  			                        <th class="td-center"><b>Organs</b></th>
+						  	  			                    </tr>
+						  	  			                </thead>
+						  	  			                <tbody>
+						  	  			                    <tr data-ng-repeat="idx in range(1,nbdb.newR.inf.condDisp.has.numParts)">
+						  	  			                        <td class="td-center">Part-{{idx}}</td>
+						  	  			                        <td class="td-center"><div>{{TmplDb().condDb[nbdb.newR.inf.condDisp.has.parts[idx]].name}}</div></td>
+						  	  			                    </tr>
+						  	  			                </tbody>
+						  	  			            </table>
+						  	  			        </div>
+						  	  			    </div>
+						  	  			</div>
+						  		  	</div>
+								  	
+								  	
+							   	</div>
+						   	</div>
+						</div>
+
+					</div> 
+				</div>														
+				
+				<div data-ng-show="!!nbdb.newR.inf.build && !isUniqueR(nbdb.newR.inf.build)">
+					<div><b>Duplicate relation!!</b></div>
+				</div>
+				<div data-ng-show="!!nbdb.newR.inf.build && !!isUniqueR(nbdb.newR.inf.build)">
+					<div class="row-fluid">
+						<div class="span6">
+							<div class=" well">
+								<label>Select Outputs</label>
+								<div>
+								    <input data-ng-model="nbdb.relCOut.search_name"
+								        type="text"
+								        class="input-medium  search-query span4"
+								        placeholder="Search Name">
+
+								    <select class="span4 margin-bottom-zero" 
+								    	data-ng-model="nbdb.relCOut.search_domain"
+								    	data-ng-options="v for v in domain"	>
+								    	<option value="">Search Domain</option>
+								    </select>
+
+								    <span class="btn btn-primary btn-mini"
+								    	data-ng-click="nbdb.relCOut={}">
+								    	Reset
+								    </span>
+                                        
+								</div>
+								<div class="div-small-scroll">
+									<table class="table table-condensed table-hover">
+										<tr data-ng-repeat="obj in nbdb.newR.inf.list.outputs|rmHidden|filterNameXPut:nbdb.relCOut.search_name|filterQntyDomainX:nbdb.relCOut.search_domain"
+										data-ng-mouseover="nbdb.newR.inf.displayQInfOut = obj.obj">
+											<td>
+												<span class="btn btn-primary btn-mini"
+													data-ng-click="addQ2ROut(obj,'inf')">
+													Add
+												</span>
+												<span>{{obj.obj.get().name}}</span>
+												<span class="entityName " >
+												   {{entityName(obj.src)}} 
+												</span>
+											</td>
+										</tr>
+									</table>
+								</div>
+							</div>	
+						</div>
+						<div class="span6">
+							<div class="row-fluid">
+								<div class="span12 well well-small" data-ng-show="!!nbdb.newR.inf.displayQInfOut">
+									<label><b>Quantity</b></label>
+									<div>Name: {{nbdb.newR.inf.displayQInfOut.get().name}} </div>
+									<div>Description: {{nbdb.newR.inf.displayQInfOut.get().desc}} </div>
+									<div>Vector: {{nbdb.newR.inf.displayQInfOut.get().isVector}} </div>
+									<div>Non Negative: {{nbdb.newR.inf.displayQInfOut.get().isNonNeg}} </div>
+									<div>Domain: {{nbdb.newR.inf.displayQInfOut.get().domain}}</div>
+									<div>Alias Group: 
+										<span data-ng-repeat="rId in TmplDb().qAliasGrpDb[nbdb.newR.inf.displayQInfOut.get().aliasGrp]">{{TmplDb().qdb[rId.id].name}}, </span>
+									</div>
+								</div>
+							</div>	
+							<div class="row-fluid">
+								<div class="span12">
+									<div class=" well ">
+										<label>Outputs</label>
+										<table class="table table-condensed table-hover">
+											<tr>
+												<th>Quantity</th> 
+												<th><i class="icon-remove-sign"></i></th>
+											</tr>
+											<tr data-ng-repeat="out in nbdb.newR.inf.build.outputs">
+												
+												<td>
+													<span>{{TmplDb().getItem(out.quantity).get().name}}</span>
+													<span class="entityName " >
+														{{extractEntityName(out.quantity)}}
+													</span>
+												</td>
+												<td>
+													<a data-ng-click="rmQ4ROut(out.quantity, 'inf')">
+														<i class="icon-remove"></i>
+													</a>
+												</td>
+											</tr>
+										</table>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<div class="row-fluid">
+						<div class="span6" data-ng-show="!!length(nbdb.newR.inf.build.inputs)">
+							<div class="div-space">
+							  	<div class="input-prepend">
+									<span class="add-on">Name</span>
+									<input class="input-large addition"
+										type="text"
+										placeholder="Relation Name"
+										id="newRsource"
+										ui-validate="{isUnique:'isUniqueRname($value)'}"
+										data-ng-model="nbdb.newR.inf.build.name"
+										required capitalize-first>
+								</div>
+							  	<div class="input-prepend descAlign">
+									<span class="add-on">Description</span>
+									<input class="input-large addition"
+										type="text"
+										placeholder="Relation Description"
+										data-ng-model="nbdb.newR.inf.build.desc"
+										required capitalize-first>
+								</div>
+							  	<div class="input-prepend descAlign">
+									<span class="add-on">IsBlackBox</span>
+	                                <select data-ng-model="nbdb.newR.inf.build.isBlkBox"
+									    data-ng-options="v for v in bool"
+										required></select>
+								</div>
+							</div>																  
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+		<div class="myModal-footer">
+			<div data-ng-click="showDb()" class="btn" >Close</div>
+			<div data-ng-click="saveNewR('inf')" class="btn btn-primary" 
+			    data-ng-show="newRInfform.$valid && length(nbdb.newR.inf.build.inputs) && 
+                    length(nbdb.newR.inf.build.outputs) && 
+                    (!nbdb.newR.inf.matchInp || !nbdb.newR.inf.matchInp.length)">Save </div>
+		</div>
+	</div>
+</div>

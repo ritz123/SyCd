@@ -1,0 +1,25 @@
+
+<div class="text-center"><h4>Synthesis of Sensor Designs</h4></div>
+
+<div class='container-fluid'>
+    <div data-ng-controller="SynthesisCtrl">
+        <div>
+            <div class="row-fluid">
+                <ng-include src="'client/synthesis/views/render_topBar.ng.html'"></ng-include>
+            </div>
+            <div class="row-fluid">
+                <ng-include src="'client/synthesis/views/render_modals.ng.html'"></ng-include>
+            </div>
+            <div data-ng-if="!!dbMode">
+                <div class="row-fluid">
+                    <ng-include src="'client/db/views/database.ng.html'"></ng-include>
+                </div>
+            </div>
+            <div data-ng-show="!dbMode">
+                <div class="row-fluid">
+                    <ng-include src="'client/synthesis/views/render_content.ng.html'"></ng-include>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

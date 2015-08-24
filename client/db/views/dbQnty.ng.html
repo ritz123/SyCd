@@ -1,0 +1,246 @@
+<div>
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div class="span6">
+				<div class="row-fluid">
+					<label><b>Quantities in Database</b></label>
+					<div class="well">
+					<div>
+						<select class="span4 margin-bottom-zero" 
+							data-ng-model="nbdb.QntyLst.search_domain"
+							data-ng-options="v for v in domain"	>
+							<option value="">Search Domain</option>
+						</select>
+
+					    <input data-ng-model="nbdb.QntyLst.search_name"
+					        type="text"
+					        class="input-medium  search-query span4"
+					        placeholder="Search Name">
+					        
+					    <button class="btn btn-primary btn-mini"
+					    	data-ng-click="nbdb.QntyLst={}">
+					    	Reset
+					    </button>
+					</div>
+					 <div class="div-space div-small-scroll"> 
+						<table class="table table-condensed table-hover 
+							table-striped table-bordered">
+							<thead>
+								<th class="td-center">Index</th>
+								<th>Name</th>
+								<th class="td-center">Vector</th> 
+								<th class="td-center">Group</th> 
+								<th class="td-center">Operations</th>
+							</thead>
+							<tbody>
+							<tr data-ng-repeat="q in TmplDb().qdb|filterSortName|filterName:nbdb.QntyLst.search_name|filterQntyDomain:nbdb.QntyLst.search_domain|withIndex" 
+								data-ng-mouseover="nbdb.displayQ = q" >
+								<td class="td-center">{{q.idx}}</td>
+								<td>
+									<a>{{q.name}}</a> 
+								</td>
+								<td class="td-center">{{q.isVector}}</td>
+								<td class="td-center">{{q.aliasGrp}}</td>
+								
+								<td class="td-center">
+									<span class="icon-padding" data-ng-if="!q.isPermanent">
+										<a data-ng-click="deleteDbQ(q)"
+											ui-jq="tooltip" 
+											ui-options="{placement:'bottom'}" 
+											title="Delete">
+											<i class="icon-remove-sign"></i>
+										</a>
+									</span>
+									<span class="icon-padding">
+										<a data-ng-click="editDbQShow(q)"
+											ui-jq="tooltip" 
+											ui-options="{placement:'bottom'}" 
+											title="Edit">
+											<i class="icon-edit"></i>
+										</a>
+									</span>
+									<span class="icon-padding">
+										<a data-ng-click="createDerivative(q)"
+											ui-jq="tooltip" 
+											ui-options="{placement:'bottom'}" 
+											title="Create Time Derivative">
+											<i class="icon-gift"></i>
+										</a>
+									</span>
+								</td>
+							</tr>
+							</tbody>
+						</table>
+					</div>
+					</div>
+				</div>
+
+				<div class="row-fluid">
+					<div class="well well-small" data-ng-show="!!nbdb.displayQ.name">
+						<label><b>Quantity</b></label>
+						<div>Name: {{nbdb.displayQ.name}} </div>
+						<div>Description: {{nbdb.displayQ.desc}} </div>
+						<div>Vector: {{nbdb.displayQ.isVector}} </div>
+						<div>Non Negative: {{nbdb.displayQ.isNonNeg}} </div>
+						<div>Domain: {{nbdb.displayQ.domain}}</div>
+						<div data-ng-if="!!nbdb.displayQ.isA">
+							IsA: {{TmplDb().qdb[nbdb.displayQ.isA].name}}
+						</div>
+						<div>Alias Group: 
+							<span data-ng-repeat="rId in TmplDb().qAliasGrpDb[nbdb.displayQ.aliasGrp]">{{TmplDb().qdb[rId.id].name}}, </span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="span6">
+				<div class="row-fluid" data-ng-if="!!nbdb.editQ.show">
+					<label><b>Edit Quantity</b></label>
+					<div class="well  well-small">
+						<form name="editQform">
+                            <label><b>Quantity</b></label>	
+                            <div>
+                            	IsA: 
+                            	<select 
+                            		class="span12"
+                            	    data-ng-model="nbdb.editQ.obj.isA"
+                            	    data-ng-options="vvv.id as vvv.name for vvv in TmplDb().qdb|filterSortName">
+                            	    <option value="">--None--</option>
+                            	</select>
+                            </div>
+                            
+							<div>
+								<label>Name</label>
+								<input type="text"
+									   class="addition span12"
+									   data-ng-model="nbdb.editQ.obj.name" required capitalize-first>
+							</div>
+							<div>
+								<label>Description</label>
+								<input type="text"
+									   class="addition span12"
+									   data-ng-model="nbdb.editQ.obj.desc" capitalize-first>
+							</div>
+							
+							<div>
+								<label>Is Vector</label>
+                                <select data-ng-model="nbdb.editQ.obj.isVector"
+								    data-ng-options="v for v in bool"
+									class="span12"
+									required></select>
+							</div>
+							<div>
+								<label>Is Non-Negative</label>
+                                <select data-ng-model="nbdb.editQ.obj.isNonNeg"
+								    data-ng-options="v for v in bool"
+									class="span12"
+									required></select>
+							</div>
+							<div>
+								<label>Domain</label>
+								<select data-ng-model="nbdb.editQ.obj.domain"
+										data-ng-options="v for v in domain"
+										class="span12"
+										required></select>
+							</div>
+							
+							<div>
+								<label>Alias Group</label>
+								<select data-ng-model="nbdb.editQ.obj.aliasGrp"
+									data-ng-options="kk as kk for (kk,vv) in TmplDb().qAliasGrpDb"
+									data-ng-change="mkAliasGrpList(nbdb.editQ.obj.aliasGrp)"
+									class="span12">
+								</select>
+								<div class="div-small-scroll" 
+									data-ng-if="!!nbdb.editQ.aliasGrpList">
+									<table class="table table-condensed table-hover">
+										<thead>
+											<th>Quantities</th>
+										</thead>
+										<tbody>
+											<tr data-ng-repeat="kk in nbdb.editQ.aliasGrpList">
+												<td>{{TmplDb().qdb[kk].name}}</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</form>
+						<div>
+							<span data-ng-click="editDbQCancel()" class="btn">Cancel</span>
+							<span data-ng-click="editDbQSubmit()" class="btn btn-primary" 
+							   data-ng-show="editQform.$valid">Submit </span>
+						</div>
+					</div>
+				</div>
+				<div class="row-fluid" data-ng-if="!nbdb.editQ.show">
+					<label><b>New Quantity</b></label>
+					<div class="well  well-small">
+						<form name="newQform">
+							<div>
+								<div class="control-group">
+								    <label class="control-label">IsA</label>
+								    <div class="controls">
+								        <div>
+								            <select 
+								            	class="span12"
+								                data-ng-model="nbdb.newQ.isA"
+								                data-ng-options="vvv.id as vvv.name for vvv in TmplDb().qdb|filterSortName"
+								                data-ng-change="exposeQntyIsA(nbdb.newQ)">
+								            </select> 
+								        </div>
+								    </div>
+								</div>
+							</div>
+							<div>
+								<label>Name</label>
+								<input type="text"
+									   placeholder1="Measurand Quantity Name"
+									   class="addition span12"
+									   ui-validate="{isText:'isNameValid($value)',isUnique:'isUniqueQ($value)'}"
+									   data-ng-model="nbdb.newQ.name" required capitalize-first>
+							</div>
+							<div>
+								<label>Description</label>
+								<input type="text"
+									   placeholder1="Description"
+									   class="addition span12"
+									   data-ng-model="nbdb.newQ.desc" capitalize-first>
+							</div>
+							
+							<div>
+								<label>Is Vector</label>
+                                <select data-ng-model="nbdb.newQ.isVector"
+								    data-ng-options="v for v in bool"
+									class="span12"
+									required></select>
+							</div>
+							<div>
+								<label>Is Non-Negative</label>
+                                <select data-ng-model="nbdb.newQ.isNonNeg"
+								    data-ng-options="v for v in bool"
+									class="span12"
+									required></select>
+							</div>
+							<div>
+								<label>Domain</label>
+								<select data-ng-model="nbdb.newQ.domain"
+										data-ng-options="v for v in domain"
+										class="span12"
+										required></select>
+							</div>
+							
+						</form>
+
+						<div>
+							<a data-ng-click="showDb()" class="btn">Close</a>
+							<a data-ng-click="newDbQ()" class="btn btn-primary" 
+							   data-ng-show="newQform.$valid">Save </a>
+						</div>
+					</div>
+				</div>
+
+				
+			</div>	
+		</div>  
+	</div>
+</div>

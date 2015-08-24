@@ -1,0 +1,55 @@
+<head>
+    <base href="/">
+    <title>SyCd</title>
+    <script type="text/javascript" src="MathJax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            config: ["MMLorHTML.js"],
+            jax: ["input/AsciiMath","output/HTML-CSS","output/NativeMML"],
+            extensions: ["asciimath2jax.js","MathMenu.js","MathZoom.js"]
+        });
+    </script>
+
+</head>
+<body>
+    <div class="workSpace" data-ng-app="isapPkg">
+        <div data-ng-controller="AppCtrl">
+            <div id="header" class="container-fluid">
+                <div class="navbar navbar-inverse  navbar-fixed-top">
+                    <div class="navbar-inner">
+                        <div class="container-fluid">
+                            <div class="brand">SyCd</div>
+                            <ul class="nav">
+                                <li>
+                                    <a data-ng-click="uiApp = 'help'">
+                                        <i class="icon-home icon-white"></i>
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a data-ng-click="uiApp = 'synthesis'">
+                                        Synthesis
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="someSpace"></div>
+
+            <div>
+                <div data-ng-if="uiApp === 'help'">
+                    <ng-include src="'client/app/views/help.ng.html'"></ng-include>
+                </div>
+                <div data-ng-if="uiApp === 'synthesis'">
+                    <ng-include src="'client/synthesis/views/synthesis.ng.html'"></ng-include>
+                </div>
+            </div>
+
+            <ng-include src="'client/footer.ng.html'"></ng-include>
+            
+        </div>
+    </div>
+
+</body>

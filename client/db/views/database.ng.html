@@ -1,0 +1,58 @@
+
+<div class="well" data-ng-controller="DbCtrl">
+	<div class="myModal-header">
+		<button type="button" class="close" 
+				data-ng-click="showDb()">&times;</button>
+		<label><b>Database</b></label>
+	</div>
+	<div class="myModal-body">
+		<div class="container-fluid">
+			<div class='row-fluid'>
+				<div >
+					<ul class="nav nav-tabs">
+						<li class="active">
+							<a data-target="#dbQnty" data-toggle="tab">Quantity</a>
+						</li>
+						
+						<li>
+							<a data-target="#dbRelInf" data-toggle="tab">Relation</a>
+						</li>
+						
+						<li>
+							<a data-target="#dbConds" data-toggle="tab">Conditions</a>
+						</li>
+						<li>
+							<a data-target="#dbCondAttrs" data-toggle="tab">Conditional Atrributes</a>
+						</li>
+						<li>
+							<a data-target="#dbEqns" data-toggle="tab">Equations</a>
+						</li>
+					</ul>
+					<div class="tab-content">
+						<div id="dbRelInf" class="tab-pane fade">
+							<ng-include src="'client/db/views/dbRelInf.ng.html'"></ng-include>
+						</div>
+
+						<div id="dbQnty" class="tab-pane fade in active">
+							<ng-include src="'client/db/views/dbQnty.ng.html'"></ng-include>
+						</div>
+
+						<div id="dbConds" class="tab-pane fade">
+							<ng-include src="'client/db/views/dbConds.ng.html'"></ng-include>
+						</div>
+
+						<div id="dbCondAttrs" class="tab-pane fade">
+							<ng-include src="'client/db/views/dbCondAttrs.ng.html'"></ng-include>
+						</div>
+
+						<div id="dbEqns" class="tab-pane fade">
+							<ng-include src="'client/db/views/dbEqns.ng.html'"></ng-include>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+	
+</div>

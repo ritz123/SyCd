@@ -1,0 +1,365 @@
+
+
+<div>
+    <div>
+        <div class="accordion" id="accordionCond">
+            <div class="accordion-group">
+                <div class="accordion-heading">
+                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionCond" href="#collapseOneCond">
+                        <b>List of Conceptual Structures</b>
+                    </a>
+                </div>
+                <div id="collapseOneCond" class="accordion-body collapse">
+                    <div class="accordion-inner">
+                        <div>
+                            <div>
+                                <input data-ng-model="nbdb.condLst.search_name"
+                                    type="text"
+                                    class="input-medium  search-query span4"
+                                    placeholder="Search Name">
+                                    
+                                <button class="btn btn-primary btn-mini"
+                                    data-ng-click="nbdb.condLst={}">
+                                    Reset
+                                </button>
+
+                            </div>
+                            <div class="div-big-scroll">
+                                <table class="table table-condensed table-striped table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th class="td-center">Index</th>
+                                            <th class="td-center">Name</th>
+                                            <th class="td-center">IsA</th>
+                                            <th class="td-center">Property (Overridden)</th>
+                                            <th class="td-center">Has</th>
+                                            <th class="td-center">Edit</th>
+                                            <th class="td-center">Delete</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr data-ng-repeat="q in TmplDb().condDb|filterSortName|filterName:nbdb.condLst.search_name|withIndex">
+                                            <td class="td-center">{{q.idx}}</td>
+                                            <td>
+                                                {{q.name}}
+                                            </td>
+                                            <td>
+                                                {{TmplDb().condDb[q.isA].name}}
+                                            </td>
+                                            <td>
+                                                <div data-ng-show="!!length(q.property)">
+                                                    <ul class="li-nostyle">
+                                                        <li data-ng-repeat="(k,v) in q.property">
+                                                            {{TmplDb().condAttrsDb[k].name}}={{v}}
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div data-ng-show="!!length(q.has)">
+                                                    <ul class="li-nostyle">
+                                                        <li data-ng-repeat="idx in range(1, q.has.numParts)">
+                                                            <span>Part-{{idx}} : {{TmplDb().condDb[q.has.parts[idx]].name}}</span>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                            <td class="td-center">
+                                                <a data-ng-click="startEditDbCond(q.id)">
+                                                    <i class="icon-edit"></i>
+                                                </a>
+                                            </td>
+                                            <td class="td-center">
+                                                <a data-ng-click="deleteDbCond(q.id)">
+                                                    <i class="icon-remove-sign"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="well">
+        <label>New Conceptual Structure</label>
+        <form name="newCondform" 
+            class="form-horizontal" >
+            <div class="control-group">
+                <label class="control-label">Name</label>
+                <div class="controls">
+                    <input type="text"
+                        placeholder="Conceptual Structure"
+                        class="addition"
+                        ui-validate="{isUnique:'isUniqueCondName($value)'}"
+                        data-ng-model="nbdb.newCond.name" required capitalize-first>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">IsA</label>
+                <div class="controls">
+                    <div>
+                        <select 
+                            data-ng-model="nbdb.newCond.isA"
+                            data-ng-options="kk as vvv.name for (kk,vvv) in TmplDb().condDb"
+                            data-ng-change="exposeCondIsA(nbdb.newCond)">
+                        </select> 
+                    </div>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">Properties</label>
+                <div class="controls">
+                    <div class="well">
+                        <table class="table table-condensed table-hover table-striped table-bordered" 
+                            data-ng-show="!!length(nbdb.newCond.property.inherited)">
+                            <thead>
+                                <tr>
+                                    <th><b>Inherited properties</b></th>
+                                    <th class="td-center"><b>Change</b></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr data-ng-repeat="(kk,vv) in nbdb.newCond.property.inherited"> 
+                                    <td>
+                                        <span>{{TmplDb().condAttrsDb[kk].name}} = {{vv}}</span>
+                                    </td>
+                                    <td class="td-center">
+                                        <a data-ng-click="copyPropertyAttr(kk,vv,nbdb.newCond)">
+                                            <i class="icon-download-alt"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table class="table table-condensed table-hover table-striped table-bordered" 
+                            data-ng-show="!!length(nbdb.newCond.property.overridden)">
+                            <thead>
+                                <tr>
+                                    <th><b>Overridden properties</b></th>
+                                    <th class="td-center"><b>Delete</b></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr data-ng-repeat="(kkf,vvf) in nbdb.newCond.property.overridden"> 
+                                    <td>
+                                        <span>{{TmplDb().condAttrsDb[kkf].name}} = {{vvf}}</span>
+                                    </td>
+                                    <td class="td-center">
+                                        <a data-ng-click="rmPropertyAttr(kkf,nbdb.newCond)">
+                                            <i class="icon-remove-sign"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+
+                        
+                        <div>
+                            <div>Attribute:</div> 
+                            <table class="table table-condensed table-striped table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Description</th>
+                                        <th>Value</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div>
+                                                <input data-ng-model="nbdb.newCond_attr_search_name"
+                                                    type="text"
+                                                    class="input-medium  search-query"
+                                                    placeholder="Search Name">
+                                            </div>
+                                            <select data-ng-model="nbdb.newCond.property.attr"
+                                                data-ng-change="nbdb.newCond.property.attrVal = true"
+                                                data-ng-options="v.id as v.name for v in TmplDb().condAttrsDb|filterSortName|filterName:nbdb.newCond_attr_search_name" size="4"></select>
+                                        </td>
+                                        <td>
+                                            <span type="text" class="input  uneditable-input span2 menu-label" > 
+                                                {{TmplDb().condAttrsDb[nbdb.newCond.property.attr].desc}}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <select data-ng-model="nbdb.newCond.property.attrVal" class="span"
+                                                data-ng-options="v for v in bool"></select>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div>
+                            <span class="btn btn-mini btn-primary" 
+                                data-ng-click="moreAttr(nbdb.newCond)">Accept</span>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">Has parts</label>
+                <div class="controls">
+                    <div class="well">
+                        Number of parts :
+                        <input class="input-small" type="number" 
+                            data-ng-model="nbdb.newCond.has.numParts" 
+                            min="0" required>
+                    </div>
+                    <div data-ng-show="!!nbdb.newCond.has.numParts">
+                        <table class="table table-condensed table-striped table-bordered">
+                            <thead>
+                                <tr>
+                                    <th class="td-center"><b>Index</b></th>
+                                    <th class="td-center"><b>Organs</b></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr data-ng-repeat="idx in range(1,nbdb.newCond.has.numParts)">
+                                    <td class="td-center">Part-{{idx}}</td>
+                                    <td>
+                                        <select 
+                                            data-ng-model="nbdb.newCond.has.parts[idx]"
+                                            data-ng-options="kk as vvv.name for (kk,vvv) in TmplDb().condDb"
+                                            required>
+                                        </select> 
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="control-group">
+                <span class="controls">
+                    <span class="btn btn-mini btn-success"
+                        data-ng-click="resetDbNewCond()">Reset</span>
+                    <span type="submit" 
+                        class="btn btn-mini btn-success" 
+                        data-ng-click="addDbCond()"
+                        data-ng-show="newCondform.$valid && 
+                        (!!length(nbdb.newCond.property.overridden)||
+                         !!length(nbdb.newCond.property.inherited)||
+                         !!nbdb.newCond.has.numParts)">Create</span>
+                </span>
+                
+            </div>
+        </form>
+    </div>
+    <div class="well" data-ng-if="nbdb.editCond">
+        <!-- // Only allow to add more attrs -->
+        <label><b>Edit Condition</b></label>
+        <form name="editCondform" 
+            class="form-horizontal"
+            data-ng-submit="editDbCond()">
+            <div class="control-group">
+                <label class="control-label">Name</label>
+                <div class="controls">
+                    <input type="text" class="input menu-label" 
+                        data-ng-model="nbdb.editCond.name" />
+                </div>
+            </div>
+            <div class="control-group" data-ng-if="!!nbdb.editCond.isA">
+                <label class="control-label">IsA</label>
+                <div class="controls">
+                    <span type="text" class="input  uneditable-input menu-label">
+                        {{TmplDb().condDb[nbdb.editCond.isA].name}}
+                    </span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label"><b>Properties</b></label>
+                <div class="controls">
+                    <div class="well">
+                        <table class="table table-condensed table-hover table-striped table-bordered" 
+                            data-ng-show="!!length(nbdb.editCond.property.inherited)">
+                            <thead>
+                                <tr>
+                                    <td><b>Inherited properties</b></td>
+                                    <td class="td-center"><b>Change</b></td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr data-ng-repeat="(kk,vv) in nbdb.editCond.property.inherited"> 
+                                    <td>
+                                        <span>{{TmplDb().condAttrsDb[kk].name}} = {{vv}}</span>
+                                    </td>
+                                    <td class="td-center">
+                                        <a data-ng-click="copyPropertyAttr(kk,vv,nbdb.editCond)">
+                                            <i class="icon-download-alt"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table class="table table-condensed table-hover table-striped table-bordered" 
+                            data-ng-show="!!length(nbdb.editCond.property.overridden)">
+                            <thead>
+                                <tr>
+                                    <td><b>Overridden properties</b></td>
+                                    <td class="td-center"><b>Change</b></td>
+                                    <td class="td-center"><b>Delete</b></td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr data-ng-repeat="(kkf,vvf) in nbdb.editCond.property.overridden"> 
+                                    <td>
+                                        <span>{{TmplDb().condAttrsDb[kkf].name}} = {{vvf}}</span>
+                                    </td>
+                                    <td class="td-center">
+                                        <a data-ng-click="copyPropertyAttr(kkf,vvf,nbdb.editCond)">
+                                            <i class="icon-download-alt"></i>
+                                        </a>
+                                    </td>
+                                    <td class="td-center">
+                                        <a data-ng-click="rmPropertyAttr(kkf,nbdb.editCond)">
+                                            <i class="icon-remove-sign"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <div>
+                            <div><b>Attribute:</b></div> 
+                            <div>
+                                <input data-ng-model="nbdb.editCond_attr_search_name"
+                                    type="text"
+                                    class="input-medium  search-query"
+                                    placeholder="Search Name">
+                            </div>
+                            <select data-ng-model="nbdb.editCond.property.attr"
+                                data-ng-options="v.id as v.name for v in TmplDb().condAttrsDb|filterSortName|filterName:nbdb.editCond_attr_search_name" size="4"></select>
+                            =
+                            <select data-ng-model="nbdb.editCond.property.attrVal"
+                                data-ng-options="v for v in bool"></select>
+                            <span class="btn btn-mini btn-primary" 
+                                data-ng-click="moreAttr(nbdb.editCond)">Accept</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="control-group">
+                <button class="controls btn btn-mini btn-success"
+                    data-ng-click="resetDbEditCond()">Cancel</button>
+                <button type="submit" 
+                    class="controls btn btn-mini btn-success" 
+                    data-ng-show="editCondform.$valid && 
+                    (!!length(nbdb.editCond.property.overridden)||
+                     !!length(nbdb.editCond.property.inherited)||
+                     !!nbdb.editCond.has.numParts)">Edit</button>
+                
+            </div>
+        </form>
+
+    </div>
+    
+</div>

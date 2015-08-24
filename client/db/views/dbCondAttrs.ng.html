@@ -1,0 +1,108 @@
+
+
+<div>
+    <div>
+        <div class="accordion" id="accordionCondAttr">
+            <div class="accordion-group">
+                <div class="accordion-heading">
+                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionCondAttr" href="#collapseOneCondAttr">
+                        <b>List of Conditional Attributes</b>
+                    </a>
+                </div>
+                <div id="collapseOneCondAttr" class="accordion-body collapse">
+                    <div class="accordion-inner">
+                        <div>
+                            <div>
+                                <input data-ng-model="nbdb.condAttrLst.search_name"
+                                    type="text"
+                                    class="input-medium  search-query span4"
+                                    placeholder="Search Name">
+                                    
+                                <button class="btn btn-primary btn-mini"
+                                    data-ng-click="nbdb.condAttrLst={}">
+                                    Reset
+                                </button>
+                            </div>
+                            <div class="div-big-scroll">
+                                <table class="table table-condensed table-compact table-bordered table-striped">
+                                    <thead>
+                                        <th class="td-center">Index</th>
+                                        <th>Name</th>
+                                        <th>Description</th>
+                                        <th class="td-center">Type</th>
+                                        <th class="td-center">Edit</th>
+                                        <th class="td-center">Delete</th>
+                                    </thead>
+                                    <tbody>
+                                        <tr data-ng-repeat="attr in TmplDb().condAttrsDb|filterSortBy:'name'|filterName:nbdb.condAttrLst.search_name|withIndex">
+                                            <td class="td-center">{{attr.idx}}</td>
+                                            <td>{{attr.name}}</td>
+                                            <td>{{attr.desc}}</td>
+                                            <td class="td-center">{{condAttrType[attr.condAttrType]}}</td>
+                                            <td class="td-center">
+                                                <a data-ng-click="editCondAttrDb(attr)">
+                                                    <i class="icon-edit"></i>
+                                                </a>
+                                            </td>
+                                            <td class="td-center">
+                                                <a data-ng-click="rmCondAttrDb(attr)">
+                                                    <i class="icon-remove-sign"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>  
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="well">
+        <div>New attribute</div>
+        <select 
+            data-ng-model="nbdb.newCondAttr.condAttrType"
+            data-ng-options="k as v for (k,v) in condAttrType"
+            required>
+        </select> 
+        <input type="text" 
+            placeholder="Name"
+            class="addition" 
+            data-ng-model="nbdb.newCondAttr.name" lower-Case> 
+        <input type="text" 
+            placeholder="Description"
+            class="addition" 
+            data-ng-model="nbdb.newCondAttr.desc" lower-Case> 
+        
+        <div>
+            <span class="btn btn-mini btn-primary" 
+                data-ng-click="addCondAttrDb()">Add</span>        
+        </div>
+    </div>
+    <div class="well" data-ng-show="!!nbdb.editCondAttr.id">
+        <div>Edit attribute</div>
+        <select 
+            data-ng-model="nbdb.editCondAttr.condAttrType"
+            data-ng-options="k as v for (k,v) in condAttrType"
+            required>
+        </select> 
+        <input type="text" 
+            placeholder="Name"
+            class="addition" 
+            data-ng-model="nbdb.editCondAttr.name" lower-Case> 
+        <input type="text" 
+            placeholder="Description"
+            class="addition" 
+            data-ng-model="nbdb.editCondAttr.desc" lower-Case> 
+        
+        <div>
+            <span class="btn btn-mini btn-primary" 
+                data-ng-click="editDoneCondAttrDb()">Done</span>     
+            <span class="btn btn-mini btn-primary" 
+                data-ng-click="cancelCondAttrDb()">Cancel</span>       
+        </div>
+    </div>
+</div>
+

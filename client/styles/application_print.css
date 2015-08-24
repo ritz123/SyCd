@@ -1,0 +1,22 @@
+@media print {
+#chat, #topbar, #stateChangeModel,
+.nav, .navbar, .modal, .myModal-header, .myModal-body, .myfooter, .hide-print,
+ng-color-picker
+{
+    display: none;
+}
+
+.img-div {
+    page-break-before: always;
+    page-break-after: always;
+}
+
+table, td, th {
+    border: 1px solid black;
+}
+
+.color-sol {
+    background-color: #ccc;
+}
+
+}

@@ -1,0 +1,814 @@
+
+<div>
+    {{length(solns)}} Concepts Found
+    <div class="tabbable">
+        <ul class="nav nav-tabs">
+            <li>
+                <a href="#sel-soln-space" 
+                    data-ng-click=""  
+                    data-toggle="tab" >Concept space
+                </a>
+            </li>
+            <li class="active">
+                <a href="#sel-concept" 
+                    data-ng-click=""  
+                    data-toggle="tab" >Concept Selection
+                </a>
+            </li>
+            <li>
+                <a href="#sel-details" 
+                    data-ng-click=""  
+                    data-toggle="tab" >Concept Analysis
+                </a>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane" id="sel-soln-space">
+                Concept space
+                <div class="btn btn-mini btn-info" data-ng-click="prepareSolnsSpace()">Show</div>
+                <div class="well">
+                    <div id="soln-solns-space-plot" class="div-scroll"
+                        bs-solns-space-data="solnsSpace" 
+                        bs-solns-space-watch="solnsSpaceCount"
+                        bs-solns-space-plot>
+                    </div>
+                </div>
+                <div data-ng-if="synb.sensorType === 'direct'">
+                    Statistics
+                    <div>
+                        DFS-DS Stats
+                        {{toJson(synb.gVar['dfsDs'].stats)}}
+                        <span class="btn btn-mini btn-info" data-ng-click="clearStats('dfsDs')">Clear Stats</span>
+                    </div>
+                    <div>
+                        KSP Stats
+                        {{toJson(synb.gVar['ksp']['stats'])}}
+                        <span class="btn btn-mini btn-info" data-ng-click="clearStats('ksp')">Clear Stats</span>
+                    </div>
+                    <div class="btn btn-mini btn-info" data-ng-click="clearStats()">Clear all stats & solns</div>
+                    <div class="btn btn-mini btn-info" data-ng-click="diffStats()" 
+                        data-ng-show="!!synb.gVar.dfsDs.solns && !!synb.gVar.ksp.solns">dfs-vs-ksp</div>
+                    <div id="dfs-vs-ksp" class="div-scroll" 
+                        data-ng-show="!!synb.gVar.dfsDs.solns && !!synb.gVar.ksp.solns"
+                        bs-dfs-vs-ksp-watch="synb.solnReady"
+                        bs-dfs-vs-ksp-data-lhs="synb.gVar.dfsDs.solns"
+                        bs-dfs-vs-ksp-data-rhs="synb.gVar.ksp.solns"
+                        bs-dfs-vs-ksp-plot>
+                    </div>
+                </div>
+                <div data-ng-if="synb.sensorType === 'feedback'">
+                    Statistics
+                    <div>
+                        DFS-FS Stats
+                        {{toJson(synb.gVar['dfsFs'].stats)}}
+                        Ave.length:{{synb.gVar.dfsFs.avgLength}}
+                        <span class="btn btn-mini btn-info" data-ng-click="clearStats('dfsFs')">Clear Stats</span>
+                    </div>
+                    <div>
+                        BFS Stats
+                        {{toJson(synb.gVar['bfs']['stats'])}}
+                        Ave.length:{{synb.gVar.bfs.avgLength}}
+                        <span class="btn btn-mini btn-info" data-ng-click="clearStats('bfs')">Clear Stats</span>
+                    </div>
+                    <div>
+                        DFS-FS-k Stats
+                        {{toJson(synb.gVar['dfsFsk'].stats)}}
+                        Ave.length:{{synb.gVar.dfsFsk.avgLength}}
+                        <span class="btn btn-mini btn-info" data-ng-click="clearStats('dfsFsk')">Clear Stats</span>
+                    </div>
+                    <div class="btn btn-mini btn-info" data-ng-click="clearStats()">Clear all stats & solns</div>
+                    <div class="btn btn-mini btn-info" data-ng-click="diffStats()" 
+                        data-ng-show="!!synb.gVar.dfsFs.solns && !!synb.gVar.bfs.solns">dfs-vs-bfs</div>
+                    <div class="btn btn-mini btn-info" data-ng-click="diffStats()" 
+                        data-ng-show="!!synb.gVar.dfsFs.solns && !!synb.gVar.dfsFsk.solns">dfs-vs-dfsk</div>
+                    <div id="dfs-vs-bfs" class="div-scroll" 
+                        data-ng-if="!!synb.gVar.dfsFs.solns && !!synb.gVar.bfs.solns"
+                        bs-dfs-vs-ksp-watch="synb.solnReady"
+                        bs-dfs-vs-ksp-data-lhs="synb.gVar.dfsFs.solns"
+                        bs-dfs-vs-ksp-data-rhs="synb.gVar.bfs.solns"
+                        bs-dfs-vs-ksp-plot>
+                    </div>
+                    <div id="dfs-vs-dfsk" class="div-scroll" 
+                        data-ng-if="!!synb.gVar.dfsFs.solns && !!synb.gVar.dfsFsk.solns"
+                        bs-dfs-vs-ksp-watch="synb.solnReady"
+                        bs-dfs-vs-ksp-data-lhs="synb.gVar.dfsFs.solns"
+                        bs-dfs-vs-ksp-data-rhs="synb.gVar.dfsFsk.solns"
+                        bs-dfs-vs-ksp-plot>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane active" id="sel-concept">
+                <!-- <label>Selection of Concepts</label> -->
+                <div class="tabbable">
+                    <ul class="nav nav-tabs">
+                        <li>
+                            <a href="#sel-view-1" 
+                                data-ng-click=""  
+                                data-toggle="tab" >View By ID
+                            </a>
+                        </li>
+                        <li class="active">
+                            <a href="#sel-view-2" 
+                                data-ng-click=""  
+                                data-toggle="tab" >View By Groups 
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane " id="sel-view-1">
+                            <div class="input-prepend input-append div-left">
+                                <span class="add-on">Solution</span>
+                                <input class="input-large addition"
+                                    type="number" min="0" max="{{length(solns) -1}}"
+                                    placeholder="Solution ID"
+                                    data-ng-model="synb.viewSol.byId">
+                                <span class="add-on btn btn-mini btn-info" 
+                                    data-ng-click="showBundlePlot(solns[synb.viewSol.byId])">Show</span>
+                            </div>
+                        </div>
+                        <div class="tab-pane active" id="sel-view-2">
+                            <div class="well hide-print" data-ng-if="!!synb.userConfig.enableSolnFilter">
+                                <label>Filters</label>
+                                <div class="sol-buttons">
+                                    <div class="control-group">
+                                        <label class="control-label">
+                                        Exclude Black Box relations: 
+                                        <input type="checkbox" class="controls"
+                                            data-ng-model="synb.viewSol.excludeBbox" 
+                                            data-ng-change="solutionGrps()">
+                                        </label>
+                                    </div>
+                                    <div class="control-group">
+                                        <label class="control-label">
+                                        Exclude Integral relations: 
+                                        <input type="checkbox" class="controls"
+                                            data-ng-model="synb.viewSol.excludeIntegral" 
+                                            data-ng-change="solutionGrps()">
+                                        </label>
+                                    </div>
+                                    <div class="control-group">
+                                        <label class="control-label">
+                                        Maximum Soln Weighted cost
+                                        <input type="number"
+                                           class="addition span2 controls"
+                                           min="0" max="150" style="margin-bottom:0px;"
+                                           data-ng-model="synb.viewSol.maxCost" >
+                                        <span class="btn btn-mini btn-info" data-ng-click="solutionGrps()">Accept</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="div-small-scroll">
+                                    <table class="table table-condensed table-hover table-striped table-bordered ">
+                                        <thead>
+                                            <th>Relation</th>
+                                            <th class="td-center">May Include</th>
+                                            <th class="td-center">Must Include</th>
+                                            <th class="td-center">Must Exclude</th>
+                                        </thead>
+                                        <tbody>
+                                            <tr data-ng-repeat="(rel,val) in synb.viewSol.allRels track by $index">
+                                                <td>{{rel}}</td>
+                                                <td class="td-center">
+                                                    <input type="radio" 
+                                                        ng-model="synb.viewSol.allRels[rel]" 
+                                                        ui-jq="tooltip" 
+                                                        ui-options="{placement:'bottom'}" 
+                                                        title="May Include"
+                                                        data-ng-change="solutionGrps()"
+                                                        value="0">
+                                                </td>
+                                                <td class="td-center">
+                                                    <input type="radio" 
+                                                        ng-model="synb.viewSol.allRels[rel]" 
+                                                        ui-jq="tooltip" 
+                                                        ui-options="{placement:'bottom'}" 
+                                                        title="Must Include"
+                                                        data-ng-change="solutionGrps()"
+                                                        value="1">
+                                                </td>
+                                                <td class="td-center">
+                                                    <input type="radio" 
+                                                        ng-model="synb.viewSol.allRels[rel]" 
+                                                        ui-jq="tooltip" 
+                                                        ui-options="{placement:'bottom'}" 
+                                                        title="Must Exclude"
+                                                        data-ng-change="solutionGrps()"
+                                                        value="2">
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <br/>
+                                <center> 
+                                    <span class="btn btn-mini btn-info"  
+                                        data-ng-click="resetFilters()" 
+                                        style="width: 90%;">Reset</span>
+                                </center>
+                            </div>
+                            <div class="tabbable">
+                                <ul class="nav nav-tabs">
+                                    <li class="active">
+                                        <a href="#sel-view-2-1" 
+                                            data-ng-click=""  
+                                            data-toggle="tab">Relation groups
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#sel-view-2-2" 
+                                            data-ng-click=""  
+                                            data-toggle="tab">Structure groups
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#sel-view-2-3" 
+                                            data-ng-click=""  
+                                            data-toggle="tab">Domain groups
+                                        </a>
+                                    </li>
+                                </ul>
+                                <div class="tab-content">
+                                    <div class="tab-pane active" id="sel-view-2-1">
+                                        <div class="tabbable ">
+                                            <div data-ng-if="!synb.viewSol.relIdx">
+                                                <div class="div-pills" >
+                                                    <ul class="nav nav-pills">
+                                                        <li data-ng-class="{false: '', true: 'active'}[$index === 0]" 
+                                                            data-ng-repeat="gp in solnRelGrps|sortSolnGrp track by $index">
+                                                            <a href="{{'#relgrp' + $index}}" data-toggle="pill">Group-{{$index}}</a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                                <div class="tab-content well ">
+                                                    <div class="tab-pane" id="{{'relgrp' + $index}}"
+                                                        data-ng-class="{false: '', true: 'active'}[$index === 0]"
+                                                        data-ng-repeat="gp in solnRelGrps|sortSolnGrp track by $index">
+                                                        <div class="well">
+                                                            <label> Relations <span data-ng-click="selectRel(gp.key)"><i class="fa fa-heart-o fg-dull"></i></span></label>
+                                                            <ul class="horiz">
+                                                                <li data-ng-repeat="cc in gp.cStruct track by $index">
+                                                                    <span class="btn btn-mini btn-primary">{{cc}}</span>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                        <span class="btn btn-mini btn-success btn-gap" 
+                                                            data-ng-repeat="ss in gp.solnIds track by $index"
+                                                            data-ng-click="showBundlePlot(solns[ss])">
+                                                            Sol-{{ss}}
+                                                        </span>
+                                                      
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div data-ng-if="!!synb.viewSol.relIdx">
+                                                <div class="tab-content well ">
+                                                    <div data-ng-if="!!solnRelGrps[synb.viewSol.relIdx]" >
+                                                        <div class="well">
+                                                            <label> Relations <span data-ng-click="selectRel()"><i class="fa fa-heart fg-red"></i></span></label>
+                                                            <ul class="horiz">
+                                                                <li data-ng-repeat="cc in solnRelGrps[synb.viewSol.relIdx].cStruct track by $index">
+                                                                    <span class="btn btn-mini btn-primary">{{cc}}</span>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                        <span class="btn btn-mini btn-success btn-gap" 
+                                                            data-ng-repeat="ss in solnRelGrps[synb.viewSol.relIdx].solnIds track by $index"
+                                                            data-ng-click="showBundlePlot(solns[ss])">
+                                                            Sol-{{ss}}
+                                                        </span>
+                                                      
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>  
+                                    <div class="tab-pane" id="sel-view-2-2">
+                                        <div class="tabbable ">
+                                            <div data-ng-if="!synb.viewSol.structIdx">
+                                                <div class="div-pills">
+                                                    <ul class="nav nav-pills">
+                                                        <li data-ng-class="{false: '', true: 'active'}[$index === 0]" 
+                                                            data-ng-repeat="gp in solnGrps|sortSolnGrp track by $index">
+                                                            <a href="{{'#grp' + $index}}" data-toggle="pill">Group-{{$index}}</a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                                <div class="tab-content well">
+                                                    <div class="tab-pane" id="{{'grp' + $index}}"
+                                                        data-ng-class="{false: '', true: 'active'}[$index === 0]"
+                                                        data-ng-repeat="gp in solnGrps|sortSolnGrp track by $index">
+                                                        <div class="well">
+                                                            <label> Conceptual Structures <span data-ng-click="selectStruct(gp.key)"><i class="fa fa-heart-o fg-dull"></i></span></label>
+                                                            <ul class="horiz">
+                                                                <li data-ng-repeat="cc in gp.cStruct track by $index">
+                                                                    <span class="btn btn-mini btn-primary">{{TmplDb().condDb[cc].name}}</span>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                        <span class="btn btn-mini btn-success btn-gap" 
+                                                            data-ng-repeat="ss in gp.solnIds track by $index"
+                                                            data-ng-click="showBundlePlot(solns[ss])">
+                                                            Sol-{{ss}}
+                                                        </span>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div data-ng-if="!!synb.viewSol.structIdx">
+                                                <div class="well">
+                                                    <div data-ng-if="!!solnGrps[synb.viewSol.structIdx]" >
+                                                        <div class="well">
+                                                            <label> Conceptual Structures <span data-ng-click="selectStruct()"><i class="fa fa-heart fg-red"></i></span></label>
+                                                            <ul class="horiz">
+                                                                <li data-ng-repeat="cc in solnGrps[synb.viewSol.structIdx].cStruct track by $index">
+                                                                    <span class="btn btn-mini btn-primary">{{TmplDb().condDb[cc].name}}</span>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                        <span class="btn btn-mini btn-success btn-gap" 
+                                                            data-ng-repeat="ss in solnGrps[synb.viewSol.structIdx].solnIds track by $index"
+                                                            data-ng-click="showBundlePlot(solns[ss])">
+                                                            Sol-{{ss}}
+                                                        </span>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane" id="sel-view-2-3">
+                                        <div class="tabbable">
+                                            <div data-ng-if="!synb.viewSol.domainIdx">
+                                                <div class="div-pills" >
+                                                    <ul class="nav nav-pills">
+                                                        <li data-ng-class="{false: '', true: 'active'}[$index === 0]" 
+                                                            data-ng-repeat="gp in solnDomainGrps|sortSolnGrp track by $index">
+                                                            <a href="{{'#domaingrp' + $index}}" data-toggle="pill">Group-{{$index}}</a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+
+                                                <div class="tab-content well ">
+                                                    <div class="tab-pane" id="{{'domaingrp' + $index}}"
+                                                        data-ng-class="{false: '', true: 'active'}[$index === 0]"
+                                                        data-ng-repeat="gp in solnDomainGrps|sortSolnGrp track by $index ">
+                                                        <div class="well">
+                                                            <label> Domains <span data-ng-click="selectDomain(gp.key)"><i class="fa fa-heart-o fg-dull"></i></span></label>
+                                                            <ul class="horiz">
+                                                                <li data-ng-repeat="cc in gp.cStruct track by $index">
+                                                                    <span class="btn btn-mini btn-primary">{{cc}}</span>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                        <span class="btn btn-mini btn-success btn-gap" 
+                                                            data-ng-repeat="ss in gp.solnIds track by $index"
+                                                            data-ng-click="showBundlePlot(solns[ss])">
+                                                            Sol-{{ss}}
+                                                        </span>
+                                                      
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div data-ng-if="!!synb.viewSol.domainIdx">
+                                                
+                                                <div class="well ">
+                                                    <div data-ng-if="!!solnDomainGrps[synb.viewSol.domainIdx]">
+                                                        <div class="well">
+                                                            <label> Domains <span data-ng-click="selectDomain()"><i class="fa fa-heart fg-red"></i></span></label>
+                                                            <ul class="horiz">
+                                                                <li data-ng-repeat="cc in solnDomainGrps[synb.viewSol.domainIdx].cStruct track by $index">
+                                                                    <span class="btn btn-mini btn-primary">{{cc}}</span>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                        <span class="btn btn-mini btn-success btn-gap" 
+                                                            data-ng-repeat="ss in solnDomainGrps[synb.viewSol.domainIdx].solnIds track by $index"
+                                                            data-ng-click="showBundlePlot(solns[ss])">
+                                                            Sol-{{ss}}
+                                                        </span>
+                                                      
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div data-ng-show="!!synb.solnPrin && !synb.hideSolPrinDiv">
+                        <div class="well img-div" data-ng-show="!!synb.domainSolns" id="domain-div">
+                            <!-- Domain View -->
+                            <div>
+                                <span class="btn btn-mini btn-primary btn-gap" 
+                                    data-ng-click="savePlot('domain-view-plot')">
+                                    Save Image
+                                </span>
+                               
+                            </div>
+                            <div>
+                                Background 
+                                <ng-color-picker 
+                                    data-color-cb="selectBgColor" 
+                                    data-color-div="#domain-div" 
+                                    colors="bgColors"
+                                    selected="bg_selected">
+                                </ng-color-picker>
+                                
+                                
+                            </div>
+                            <div>
+                                <label>
+                                    Domain View: Sol-{{synb.domainSolns.soln.id}} 
+                                    <span data-ng-if="!!synb.solnCart[synb.domainSolns.soln.id]">
+                                        <a data-ng-click="rmShortList(synb.domainSolns.soln.id)" ui-jq="tooltip" ui-options="{placement:'bottom'}" title="Unlike">
+                                            <i class="fa fa-heart fg-red"></i>
+                                        </a>
+                                    </span>
+                                    <span data-ng-if="!synb.solnCart[synb.domainSolns.soln.id]">
+                                        <a data-ng-click="shortList(synb.domainSolns.soln.id)" ui-jq="tooltip" ui-options="{placement:'bottom'}" title="Like">
+                                            <i class="fa fa-heart-o fg-dull"></i>
+                                        </a>
+                                    </span>
+                                </label>
+                                <div id="domain-view-plot" class="div-scroll"
+                                    bs-sol-data="synb.domainSolns" 
+                                    bs-sol-watch="synb.domainSolnsChg"
+                                    bs-domain-plot>
+                                </div>
+                            </div>
+                        </div>     
+                        <div class="well  img-div bg-dark fg-dull" id="prin-sol-div">
+                            <!-- Solution Principle -->
+                            <div>
+                                <span class="btn btn-mini btn-primary btn-gap" 
+                                    data-ng-click="savePlot('soln-prin-plot')">
+                                    Save Image
+                                </span>
+                            </div>
+                            <div>
+                                Background 
+                                <ng-color-picker 
+                                    data-color-cb="selectBgColor" 
+                                    data-color-div="#prin-sol-div" 
+                                    colors="bgColors"
+                                    selected="bg_selected">
+                                </ng-color-picker>
+                                Foreground
+                                <ng-color-picker 
+                                    data-color-cb="selectFgColor" 
+                                    data-color-div="#prin-sol-div" 
+                                    colors="fgColors"
+                                    selected="fg_selected">
+                                </ng-color-picker> 
+                                
+                                SVG Foreground
+                                <ng-color-picker 
+                                    data-color-cb="selectSvgFgColor" 
+                                    data-color-div='["#soln-prin-plot .svg-node-text","#soln-prin-plot .legend", "#soln-prin-plot .halo--legend"]' 
+                                    colors="svgfgColors"
+                                    selected="svgfg_selected">
+                                </ng-color-picker>
+                                
+                            </div>
+                            <div>
+                                <label data-ng-if="!!synb.solnPrin">
+                                    Solution Principle: Sol-{{synb.solnPrin.soln.id}}
+                                    <span data-ng-if="!!synb.solnCart[synb.solnPrin.soln.id]">
+                                        <a data-ng-click="rmShortList(synb.solnPrin.soln.id)"
+                                            ui-jq="tooltip" ui-options="{placement:'bottom'}" title="Unlike">
+                                            <i class="fa fa-heart fg-red"></i>
+                                        </a>
+                                    </span>
+                                    <span data-ng-if="!synb.solnCart[synb.solnPrin.soln.id]">
+                                        <a data-ng-click="shortList(synb.solnPrin.soln.id)" 
+                                            ui-jq="tooltip" ui-options="{placement:'bottom'}" title="Like">
+                                            <i class="fa fa-heart-o fg-dull"></i>
+                                        </a>
+                                    </span>
+                                </label>
+                                <div id="soln-prin-plot" class="div-scroll"
+                                    bs-sol-data="synb.solnPrin" 
+                                    bs-sol-watch="synb.solnPrinChg"
+                                    bs-soln-prin-plot>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        <div class="well">
+                            <!-- Table for Solution Principle -->
+                            <label>Solution Principle </label>
+                            <div>Path Cost: {{synb.solnPrin.soln.cost}}</div>
+                            <div>Weighted Cost: {{synb.solnPrin.soln.wtCost}}</div>
+
+                            <table class="table table-condensed table-compact table-bordered table-striped">
+                                <thead>
+                                    <th>Type</th>
+                                    <th>Name</th>
+                                    <th>Component</th>
+                                    <th>Conceptual Structure</th>
+                                </thead>
+                                <tbody>
+                                    <tr data-ng-repeat="gnd in synb.solnPrin.soln.nodes track by $index" 
+                                        data-ng-hide="(gnd.obj.getType() === 'TmplRel') && (gnd.obj.relType === 1)">
+                                        <td>
+                                            <span data-ng-class="{false:'entityName',true:'funcName'}[gnd.obj.getType() === 'TmplRel']">
+                                               {{gnd.getType()}}
+                                            </span>
+                                        </td>
+                                        <td>{{gnd.getName()}} </td>
+                                        <td>comp-{{gnd.bodyId}}</td>
+                                        <td>{{TmplDb().condDb[gnd.obj.condName].name}}</td>
+                                        
+                                    </tr>     
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane" id="sel-details">
+                <div data-ng-show="!!length(synb.solnCart)">
+                    <!-- <label>Detailed Analysis</label> -->
+                    <div>
+                        <div class="well">
+                            <label>{{(length(synb.solnCart) > 1)?"Interesting Solutions": "Interesting Solution"}}</label>
+                            <span class="btn btn-mini btn-success btn-gap" 
+                                data-ng-repeat="(solnId,v) in synb.solnCart"
+                                data-ng-click="showSolSe(solns[solnId])">
+                                Sol-{{solnId}}
+                            </span>
+                        </div>
+                        <div class="well img-div bg-dark fg-dull" id="se-plot-div" data-ng-show="!!synb.solnSe">
+                            <div>
+                                <span class="btn btn-mini btn-primary btn-gap" 
+                                    data-ng-click="savePlot('soln-se-plot')">
+                                    Save Image
+                                </span>
+                                <span class="btn btn-mini btn-primary btn-gap" 
+                                    data-ng-click="toggleFrontierAll()">
+                                    Toggle Frontier Nodes
+                                </span>
+                                <span class="btn btn-mini btn-primary btn-gap" 
+                                    data-ng-click="autoActivateAll()">
+                                    Toggle Auto Activate
+                                </span>
+                            </div>
+                            <div>
+                                Background 
+                                <ng-color-picker 
+                                    data-color-cb="selectBgColor" 
+                                    data-color-div="#se-plot-div" 
+                                    colors="bgColors"
+                                    selected="bg_selected">
+                                </ng-color-picker>
+                                Foreground
+                                <ng-color-picker 
+                                    data-color-cb="selectFgColor" 
+                                    data-color-div="#se-plot-div" 
+                                    colors="fgColors"
+                                    selected="fg_selected">
+                                </ng-color-picker> 
+                                
+                                SVG Foreground
+                                <ng-color-picker 
+                                    data-color-cb="selectSvgFgColor" 
+                                    data-color-div='["#soln-se-plot .svg-node-text","#soln-se-plot .legend", "#soln-se-plot .halo--legend"]' 
+                                    colors="svgfgColors"
+                                    selected="svgfg_selected">
+                                </ng-color-picker>
+                                
+                            </div>
+                            <div >
+                                <label>
+                                    Solution with Side-effects: Sol-{{synb.solnSe.soln.id}} 
+                                    <span data-ng-if="!!synb.solnCart[synb.solnSe.soln.id]">
+                                        <a data-ng-click="rmShortList(synb.solnSe.soln.id)"
+                                            ui-jq="tooltip" ui-options="{placement:'bottom'}" title="Unlike">
+                                            <i class="fa fa-heart fg-red"></i>
+                                        </a>
+                                    </span>
+                                    <span data-ng-if="!synb.solnCart[synb.solnSe.soln.id]">
+                                        <a data-ng-click="shortList(synb.solnSe.soln.id)"
+                                            ui-jq="tooltip" ui-options="{placement:'bottom'}" title="Like">
+                                            <i class="fa fa-heart-o fg-dull"></i>
+                                        </a>
+                                    </span>
+                                </label>
+                                <div>
+                                    <div id="soln-se-plot" class="div-scroll"
+                                        bs-sol-data="synb.solnSe" 
+                                        bs-sol-watch="synb.solnSeChg"
+                                        bs-soln-se-plot>
+                                    </div>
+                                </div>
+                                <div id="soln-se-plot-menu">
+                                    <div data-ng-show="!solns[synb.solnSe.soln.id].userUnHide[synb.solnSe.soln.uiHide]">
+                                        <span class="btn btn-mini btn-primary"  
+                                            data-ng-click="actRelation()">Activate</span>
+                                    </div>
+                                    <div data-ng-show="!!solns[synb.solnSe.soln.id].userUnHide[synb.solnSe.soln.uiHide]">
+                                        <span class="btn btn-mini btn-primary" 
+                                            data-ng-click="deactRelation()">Deactivate</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tabbable" data-ng-show="!!synb.solnSe.soln">
+                            <ul class="nav nav-tabs">
+                                <li class="active"><a href="#det-1" data-toggle="tab">Frontier nodes</a></li>
+                                <li><a href="#det-2" data-toggle="tab">Quantification</a></li>
+                                <li><a href="#det-3" data-toggle="tab">Solution</a></li>
+
+                            </ul>
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="det-1">
+                                    Side-effect inhibitors (Frontier nodes)
+                                    <div class="div-small-scroll">
+                                        <table class="table table-condensed table-compact table-bordered table-striped">
+                                            <thead>
+                                                <th><b>Relation</b></th>
+                                                <th><b>Component</b></th>
+                                                <th><b>Conceptual Structure</b></th>
+                                                <th><b>Action</b></th>
+                                            </thead>
+                                            <tbody>
+                                                <tr data-ng-repeat="gId in synb.solnSe.soln.borderRels | sortFName:synb" >
+                                                    
+                                                    <td>{{synb.solnSe.soln.gNodes[gId].obj.name}} </td>
+                                                    <td>comp-{{synb.solnSe.soln.gNodes[gId].bodyId}}</td>
+                                                    <td>{{TmplDb().condDb[synb.solnSe.soln.gNodes[gId].obj.condName].name}}</td>
+                                                    <td><span class="btn btn-info btn-mini" 
+                                                        data-ng-click="actRelationId(synb.solnPrin.soln,gId)">Activate</span></td>
+                                                </tr>     
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="tab-pane" id="det-2">
+                                    Quantification
+                                    <div>
+                                        <div class="tab-pane" id="solnEqn">
+                                            <div  id='{{"synEqn" + synb.show.id}}'>
+                                                <div class="sol-buttons">
+                                                    <button class="btn btn-primary btn-mini" data-ng-show="!synb.show.showEqn"
+                                                        data-ng-click="showEquations(synb.show)">
+                                                        Show Equations
+                                                    </button>
+                                                    <button class="btn btn-primary btn-mini" data-ng-show="!!synb.show.showEqn"
+                                                        data-ng-click="hideEquations(synb.show)">
+                                                        Hide Equations
+                                                    </button>
+                                                    <button class="btn btn-primary btn-mini" data-ng-show="!!synb.show.showEqn"
+                                                        data-ng-click="printEquations(synb.show)">
+                                                        Print Equations
+                                                    </button>
+                                                    <button class="btn btn-primary btn-mini" data-ng-show="!!synb.show.showEqn"
+                                                        data-ng-click="saveEquations(synb.show, synb.show.id)">
+                                                        Save Equations
+                                                    </button>
+                                                </div>
+                                                <div class="well" data-ng-if="!!synb.show.showEqn">
+                                                    <label>Model's System Equations</label>
+                                                    <div class="div-small-scroll">
+                                                        <table class="table table-condensed table-compact table-bordered table-striped table-hover">
+                                                            <tr data-ng-repeat="eqn in synb.show.displayEqnsList">
+                                                                <td>
+                                                                    <span>[{{$index +1}}] &nbsp;</span>
+                                                                    <span class="eqns">`{{eqn}}`</span>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div> 
+                                    </div>
+                                </div>
+                                <div class="tab-pane" id="det-3">
+                                    <div >Solution Details
+                                        
+                                        <div>
+                                            <div>
+                                                <div class="well">
+                                                    <label>Unstable Components</label>
+                                                    <ul data-ng-repeat="comp in synb.show.cNodeTree.kids">
+                                                        <li data-ng-show="!!length(comp.attrsConflict)">{{comp.id}}</li>
+                                                    </ul>
+                                                </div>    
+                                            </div>
+
+                                            <div>
+                                                <div class="well div-small-scroll">
+                                                    <label>Stable Components</label>
+                                                    <ul data-ng-repeat="comp in synb.show.cNodeTree.kids">
+                                                        <li data-ng-show="!!length(comp.attrs)">Component-{{comp.id}}
+                                                            <table class="table table-condensed table-compact">
+                                                                <thead>
+                                                                    <th>Required Condition</th>
+                                                                    <th>Description</th>
+                                                                    <th>Type</th>
+                                                                    <!-- <th class="td-center">Remove Condition</th> -->
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr data-ng-repeat="(kk,attr) in comp.attrs">
+                                                                        <td>{{TmplDb().condAttrsDb[kk].name}} : {{attr}}</td>
+                                                                        <td>{{TmplDb().condAttrsDb[kk].desc}}</td>
+                                                                        <td>{{condAttrType[TmplDb().condAttrsDb[kk].condAttrType]}}</td>
+                                                                       <!--  <td class="td-center">
+                                                                            <a data-ng-click="try2InhibitByCond(synb.show,comp,kk)">
+                                                                                <i class="icon-remove"></i>
+                                                                            </a>
+                                                                        </td> -->
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </li>
+                                                    </ul>
+                                                </div>    
+                                            </div>
+                                            <div data-ng-if="!!length(synb.show.userUnHide)">
+                                                <div class="well div-small-scroll">
+                                                    <label>
+                                                        User Enforced 
+                                                        <span class="btn btn-mini btn-success" 
+                                                            data-ng-click="deactAllRelation(synb.show)">
+                                                            Clear all
+                                                        </span>
+                                                    </label>
+                                                    <table class="table table-condensed table-compact">
+                                                        <thead>
+                                                            <th>Relation</th>
+                                                            <th>Condition</th>
+                                                            <th>Component</th>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr data-ng-repeat="(id, v) in synb.show.userUnHide">
+                                                                <td><span>{{synb.show.gNodes[id].getName()}}</span></td>
+                                                                <td><span>{{TmplDb().condDb[synb.show.gNodes[id].obj.condName].name}}</span></td>
+                                                                <td><span>component-{{synb.show.gNodes[id].bodyId}}</span></td>
+                                                                <!-- <td><a data-ng-click="try2Hide(synb.show,id)"><i class="icon-remove"></i></a></td> -->
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="well div-big-scroll">
+                                                    <label>Active Relations</label>
+                                                    <table class="table table-condensed table-compact">
+                                                        <thead>
+                                                            <th>Relation</th>
+                                                            <th>Condition</th>
+                                                            <th>Component</th>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr data-ng-repeat="gd in synb.show.gNodes|filterHidden:synb|filterRel:synb" 
+                                                                data-ng-class="{false:'', true:'color-sol'}[!!synb.show.solnPath[gd.id]]">
+
+                                                                <td><span>[{{$index}}]{{synb.show.gNodes[gd.id].getName()}}</span></td>
+                                                                <td>
+                                                                    <span>{{TmplDb().condDb[synb.show.gNodes[gd.id].obj.condName].name}}</span>
+
+                                                                    <div data-ng-show="!!length(TmplDb().condDb[synb.show.gNodes[gd.id].obj.condName].property)">
+                                                                        <span><b>Has:</b></span>
+                                                                        <ul class="li-nostyle">
+                                                                            <li data-ng-repeat="(k,v) in TmplDb().condDb[synb.show.gNodes[gd.id].obj.condName].property">
+                                                                                {{TmplDb().condAttrsDb[k].name}}={{v}}
+                                                                            </li>
+                                                                        </ul>
+                                                                    </div>
+                                                                </td>
+                                                                <td><span>component-{{synb.show.gNodes[gd.id].bodyId}}</span></td>
+                                                                <!-- <td>
+                                                                    <span data-ng-show="!!synb.show.userUnHide[gd.id]">
+                                                                        <a data-ng-click="try2Hide(synb.show,gd.id)"><i class="icon-remove"></i></a>
+                                                                    </span>
+                                                                </td> -->
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div data-ng-show="synb.wait === 1">
+        <div class="grey-page">
+            <span class="center-big"><i class="fa fa-spinner fa-spin"></i></span>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,399 @@
+<div>
+    <div data-ng-if="synb.page === 0">
+        <div id="stateChangeModel">
+            <div class="well div-small-scroll">
+                <div>
+                    <label><b>Presence detection</b></label>
+                </div>
+                <div data-ng-init="prepareData4SynbThereIs()">
+                    <select 
+                        data-ng-model="synb.thereIs.relIds"
+                        data-ng-options="cc.name for cc in synb.thereIs.lst"
+                        data-ng-change="getThereIsQnty()">
+                        <option value="">Select Structural Component</option>
+                    </select>
+                </div>
+                <div data-ng-if="!!synb.thereIs.qIds">
+                    <table class="table table-condensed table-hover">
+                        <thead>
+                            <th>Input Quantity</th>
+                        </thead>
+                        <tbody>
+                            <tr data-ng-repeat="qId in synb.thereIs.qIds">
+                                <td>
+                                    {{TmplDb().qdb[qId].name}}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div>
+                <div class="accordion" id="accord2">
+                    <div class="accordion-group">
+                        <div class="accordion-heading">
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accord2" href="#collapseOne">
+                                <b>Search Configuration</b>
+                            </a>
+                        </div>
+                        <div id="collapseOne" class="accordion-body collapse">
+                            <div class="accordion-inner">
+                                <form class="form-horizontal">
+
+                                    <div class="well">
+                                        <label>Direct Sensing</label>
+                                        <div class="control-group">
+                                            <label class="control-label">Direct Sensing Algo </label>
+                                            <div class="controls">
+                                                <select data-ng-model="synb.userConfig.dsAlgo"
+                                                    data-ng-options="v for v in ['KSP', 'DFS']"
+                                                    class="span2"></select>
+                                            </div>
+                                        </div>
+                                        <div class="control-group">
+                                            <label class="control-label">Maximum path Cost</label>
+                                            <div class="controls">
+                                                <input type="number"
+                                                   class="addition span2"
+                                                   min="0" max="45"
+                                                   data-ng-model="synb.userConfig.dMaxPathCost" >
+                                            </div>
+                                        </div>
+                                        <div class="control-group">
+                                            <label class="control-label">Number of Component Layers</label>
+                                            <div class="controls">
+                                                <input type="number"
+                                                   class="addition span2"
+                                                   min="3" max="10"
+                                                   data-ng-model="synb.userConfig.dMaxCNodes" >
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="well">
+                                        <label>Feedback Sensing</label>
+                                        <div class="control-group">
+                                            <label class="control-label">Feedback Sensing Algo </label>
+                                            <div class="controls">
+                                                <select data-ng-model="synb.userConfig.fsAlgo"
+                                                    data-ng-options="v for v in ['BFS', 'DFS-k', 'DFS-all']"
+                                                    class="span2"></select>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="control-group">
+                                            <label class="control-label">Maximum path length</label>
+                                            <div class="controls">
+                                                <input type="number"
+                                                   class="addition span2"
+                                                   min="1" max="10000"
+                                                   data-ng-model="synb.userConfig.fMaxDepth" >
+                                            </div>
+                                        </div>
+                                        <div class="control-group">
+                                            <label class="control-label">Number of Component Layers</label>
+                                            <div class="controls">
+                                                <input type="number"
+                                                   class="addition span2"
+                                                   min="3" max="10"
+                                                   data-ng-model="synb.userConfig.fMaxCNodes" >
+                                            </div>
+                                        </div>
+                                        <div class="control-group">
+                                            <label class="control-label">Electronic Controller</label>
+                                            <div class="controls">
+                                                <select data-ng-model="synb.userConfig.isElecCtrl"
+                                                    data-ng-options="v for v in bool"
+                                                    class="span2"></select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="well">
+                                        <label>Common</label>
+                                        <div class="control-group">
+                                            <label class="control-label">Experimental</label>
+                                            <div class="controls">
+                                                <select data-ng-model="synb.userConfig.isExpt"
+                                                    data-ng-options="v for v in bool"
+                                                    class="span2"></select>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="control-group">
+                                            <label class="control-label">Enable Soln Filters</label>
+                                            <div class="controls">
+                                                <select data-ng-model="synb.userConfig.enableSolnFilter"
+                                                    data-ng-options="v for v in bool"
+                                                    class="span2"></select>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="control-group">
+                                            <label class="control-label">Explore Frontier Nodes</label>
+                                            <div class="controls">
+                                                <select data-ng-model="synb.userConfig.exploreFrontiers"
+                                                    data-ng-options="v for v in bool"
+                                                    class="span2"></select>
+                                            </div>
+                                        </div>
+
+                                        <div class="control-group">
+                                            <label class="control-label">Allow Duplicate Domains</label>
+                                            <div class="controls">
+                                                <select data-ng-model="synb.userConfig.allowDupDomain"
+                                                    data-ng-options="v for v in bool"
+                                                    class="span2"></select>
+                                            </div>
+                                        </div>
+
+                                        <div class="control-group">
+                                            <label class="control-label">Maximum number of Solution</label>
+                                            <div class="controls">
+                                                <input type="number"
+                                                   class="addition span2"
+                                                   min="1" 
+                                                   data-ng-model="synb.userConfig.numSolns" >
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="btn btn-info btn-mini" data-ng-click="resetUserConf()">Reset</div>
+                                    <div class="btn btn-info btn-mini"><a class="accordion-toggle" data-toggle="collapse" data-parent="#accord2" href="#collapseOne">Done</a></div>
+                                </form>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <form>
+                    <label>Type of sensing</label>
+                    <label class="radio inline">
+                        <input type="radio" ng-model="sensorType" value="direct" checked> Direct Sensing 
+                    </label>
+                    <label class="radio inline">
+                        <input type="radio" ng-model="sensorType" value="feedback"> Feedback Sensing 
+                    </label>
+                </form>
+            </div>
+
+            <div data-ng-if="sensorType === 'direct'" data-ng-init="sensorTypeChg()">
+                
+                <div class="row-fluid">
+                    <div class="span6">
+                        <div class="well"
+                            data-ng-init="buildQ4Synt()">
+                            <label>Select Input</label>
+                            <div>
+                                <input data-ng-model="synb.qntyInp_search_name"
+                                    type="text"
+                                    class="input-medium  search-query span4"
+                                    placeholder="Search Name">
+
+                                <select class="span4 margin-bottom-zero" 
+                                    data-ng-model="synb.qntyInp_search_domain"
+                                    data-ng-options="v for v in domain" >
+                                    <option value="">Search Domain</option>
+                                </select>
+
+                                <button class="btn btn-primary btn-mini"
+                                    data-ng-click="synb.qntyInp_search_name='';synb.qntyInp_search_domain=''">
+                                    Reset
+                                </button>
+
+                            </div>
+                            <div class="div-small-scroll">
+                                <table class="table table-condensed table-hover" 
+                                    data-ng-show="length(synb.stateChange.inputs) !== 1">
+                                    <tr data-ng-repeat="obj in synb.stchg.inputs|rmHidden|filterSortBy:'qObj.name'|filterNameXPutSyn:synb.qntyInp_search_name|filterQntyDomainSyn:synb.qntyInp_search_domain|withIndex">
+                                        <td>{{obj.idx}}</td>
+                                        <td>
+                                            <span>{{obj.qObj.name}}</span>
+                                        </td>
+                                        <td class="align-center">
+                                            <span class="btn btn-success btn-mini"
+                                                data-ng-click="addQ2StChgInp(obj)">
+                                                <i class="fa fa-check"></i>
+                                            </span> 
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div  class="span6">
+                        <b>Input</b>
+                        <ul class="li-inputs">
+                            <li data-ng-repeat="inp in synb.stateChange.inputs">
+                                <span>
+                                    <i class="fa fa-chevron-circle-right"></i>
+                                </span>
+                                <span>{{TmplDb().qdb[inp.Q].name}}</span>
+                                <span>
+                                    <span class="btn btn-success btn-mini"
+                                        data-ng-click="rmStateChangeInp(inp)">
+                                        <i class="fa fa-times"></i>
+                                    </span> 
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="row-fluid" >
+                    <div class="span6">
+                        <div class="well" data-ng-init="">
+                            <label>Select Output</label>
+                            <div>
+                                <input data-ng-model="synb.qntyOut_search_name"
+                                    type="text"
+                                    class="input-medium  search-query span4"
+                                    placeholder="Search Name">
+                                <select class="span4 margin-bottom-zero" 
+                                    data-ng-model="synb.qntyOut_search_domain"
+                                    data-ng-options="v for v in domain" >
+                                    <option value="">Search Domain</option>
+                                </select>
+                                <button class="btn btn-primary btn-mini"
+                                    data-ng-click="synb.qntyOut_search_name='';synb.qntyOut_search_domain=''">
+                                    Reset
+                                </button>
+                            </div>
+                            <div class="div-small-scroll">
+                                <table class="table table-condensed table-hover" 
+                                    data-ng-show="length(synb.stateChange.outputs) !== 1">
+                                    <tr data-ng-repeat="obj in synb.stchg.outputs|rmHidden|filterSortBy:'qObj.name'|filterNameXPutSyn:synb.qntyOut_search_name|filterQntyDomainSyn:synb.qntyOut_search_domain|withIndex">
+                                        <td>{{obj.idx}}</td>
+                                        <td>
+                                            <span>{{obj.qObj.name}}</span>
+                                        </td>
+                                        <td>
+                                            <span class="btn btn-success btn-mini"
+                                              data-ng-click="addQ2StChgOut(obj)">
+                                              <i class="fa fa-check"></i>
+                                            </span> 
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="span6">
+                        <b>Output</b>
+                        <ul class="li-outputs">
+                            <li data-ng-repeat="out in synb.stateChange.outputs">
+                                <span>
+                                <i class="fa fa-chevron-circle-left"></i>
+                                </span>
+                                <span>
+                                    {{TmplDb().qdb[out.Q].name}}
+                                </span>
+                                <span>
+                                    <span class="btn btn-success btn-mini"
+                                        data-ng-click="rmStateChangeOut(out)">
+                                        <i class="fa fa-times"></i>
+                                    </span> 
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div>
+                    <button class="btn btn-success btn-mini"  data-ng-click="searchDb()"
+                        data-ng-show="!!length(synb.stateChange.inputs) && !!length(synb.stateChange.outputs)">
+                        Search
+                    </button>
+                </div>
+            </div>
+            <div data-ng-if="sensorType === 'feedback'" data-ng-init="sensorTypeChg()">
+                
+                <div class="row-fluid">
+                    <div class="span6">
+                        <div class="well"
+                            data-ng-init="buildQ4Synt()">
+                            <label>Select Input</label>
+                            <div>
+                                <input data-ng-model="synb.qntyInp_search_name"
+                                    type="text"
+                                    class="input-medium  search-query span4"
+                                    placeholder="Search Name">
+
+                                <select class="span4 margin-bottom-zero" 
+                                    data-ng-model="synb.qntyInp_search_domain"
+                                    data-ng-options="v for v in domain" >
+                                    <option value="">Search Domain</option>
+                                </select>
+
+                                <button class="btn btn-primary btn-mini"
+                                    data-ng-click="synb.qntyInp_search_name='';synb.qntyInp_search_domain=''">
+                                    Reset
+                                </button>
+
+                            </div>
+                            <div class="div-small-scroll">
+                                <table class="table table-condensed table-hover" 
+                                    data-ng-show="length(synb.stateChange.inputs) !== 1">
+                                    <tr data-ng-repeat="obj in synb.stchg.inputs|rmHidden|filterSortBy:'qObj.name'|filterNameXPutSyn:synb.qntyInp_search_name|filterQntyDomainSyn:synb.qntyInp_search_domain|withIndex">
+                                        <td>{{obj.idx}}</td>
+                                        <td>
+                                            <span>{{obj.qObj.name}}</span>
+                                        </td>
+                                        <td class="align-center">
+                                            <span class="btn btn-success btn-mini"
+                                                data-ng-click="addQ2StChgInp(obj)">
+                                                <i class="fa fa-check"></i>
+                                            </span> 
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div  class="span6">
+                        <b>Input</b>
+                        <ul class="li-inputs">
+                            <li data-ng-repeat="inp in synb.stateChange.inputs">
+                                <span>
+                                    <i class="fa fa-chevron-circle-right"></i>
+                                </span>
+                                <span>{{TmplDb().qdb[inp.Q].name}}</span>
+                                <span>
+                                    <span class="btn btn-success btn-mini"
+                                        data-ng-click="rmStateChangeInp(inp)">
+                                        <i class="fa fa-times"></i>
+                                    </span> 
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            
+                <div data-ng-init="sensorTypeChg()">
+                    <button class="btn btn-success btn-mini"  data-ng-click="searchDb()"
+                        data-ng-show="!!length(synb.stateChange.inputs)">
+                        Search
+                    </button>
+                </div>
+            </div>
+
+            <div data-ng-show="synb.queryDb === 2">
+                <b>
+                    <span data-ng-if="solns.length === 0">Sorry, cannot find any solution</span>
+                </b>
+            </div>
+        </div>
+    </div>
+    <div data-ng-if="synb.page === 1">
+        <div class="row-fluid">
+            <ng-include src="'client/synthesis/views/render_sidebar.ng.html'"></ng-include>
+        </div>
+      
+    </div>
+    <div data-ng-show="synb.queryDb === 1">
+        <div class="grey-page">
+            <span class="center-big"><i class="fa fa-spinner fa-spin"></i></span>
+        </div>
+    </div>
+</div>

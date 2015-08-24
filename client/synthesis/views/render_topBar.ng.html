@@ -1,0 +1,77 @@
+
+<div id="topbar">
+    <span class="pull-left btn-position-left" data-ng-if="!dbMode">
+        <button class="btn btn-mini btn-primary" data-ng-click="searchCb()">
+            Search
+        </button>
+    </span>
+    <span class="pull-right btn-position">
+        <div data-ng-if="!!dbMode">
+            <div data-ng-controller="DbCtrl">
+                <button type="button" 
+                    class="btn btn-mini btn-primary" 
+                    data-placement="bottom"
+                    ui-jq="tooltip" title="Exit Database"
+                    data-ng-click="showDb()">
+                    Exit Database
+                </button>
+                
+                <button type="button" 
+                    data-ng-controller="DbCtrl"
+                    class="btn btn-mini" 
+                    data-ng-class="{false:'btn-primary', true:'btn-danger'}[!!TmplDb().changeCount.all]"
+                    data-placement="bottom"
+                    ui-jq="tooltip" title="Share Database"
+                    data-ng-click="shareDbCb()">
+                    Share Database
+                </button>
+                <button type="button" 
+                    data-ng-controller="DbCtrl"
+                    class="btn btn-mini btn-primary"
+                    data-ng-show="!!TemplateDB.data.remote_db_version &&  (TemplateDB.data.remote_db_version != TemplateDB.tree.version.major)" 
+                    data-placement="bottom"
+                    ui-jq="tooltip" title="Reload Database"
+                    data-ng-click="reloadDb()" >
+                    Sync
+                </button>
+                
+            </div>
+        </div>
+        <div data-ng-if="!dbMode">
+            <button type="button" 
+                data-ng-controller="DbCtrl"
+                class="btn btn-mini btn-primary" 
+                data-placement="bottom"
+                ui-jq="tooltip" title="Browse Database"
+                data-ng-click="showDb()">
+                Database
+            </button>
+            <button type="button" 
+                data-ng-controller="DbCtrl"
+                class="btn btn-mini" 
+                data-ng-class="{false:'btn-primary', true:'btn-danger'}[!!TmplDb().changeCount.all]"
+                data-placement="bottom"
+                ui-jq="tooltip" title="Share Database"
+                data-ng-click="shareDbCb()">
+                Share Database
+            </button>
+            <button type="button" 
+                class="btn btn-mini btn-primary"
+                data-ng-controller="DbCtrl"
+                data-ng-show="!!TemplateDB.data.remote_db_version && (TemplateDB.data.remote_db_version != TemplateDB.tree.version.major)"
+                data-placement="bottom"
+                ui-jq="tooltip" title="Reload Database"
+                data-ng-click="reloadDb()" >
+                Sync
+            </button>
+            <input id="fileLoadHidden" type="file" style="display:none"/>
+        </div>  
+    </span>
+    <ul class="breadcrumb">
+        <li>
+        </li>
+    </ul>
+</div>
+<div class="navbar">
+    <div id="status_msg" class="alert alert-success  navbar-fixed-top"></div>
+</div>

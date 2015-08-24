@@ -1,0 +1,307 @@
+
+<div data-ng-if="!!synb.show">
+    <div>
+        <ul class="nav nav-tabs">
+            <li class="active"><a data-target="#solnPrinciple" data-toggle="tab">Solution Principle</a></li>
+            <li><a data-target="#solnPlot" data-toggle="tab">Graph</a></li>
+            <li><a data-target="#solnEqn" data-toggle="tab">Equations</a></li>
+            <li><a data-target="#solnComp" data-toggle="tab">Components & Conditions</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane active" id="solnPrinciple">
+                <div>
+                    <table class="table table-condensed table-compact table-bordered table-striped">
+                        <thead>
+                            <th>Type</th>
+                            <th>Name</th>
+                            <th>Component</th>
+                            <th>Conditions</th>
+                        </thead>
+                        <tbody>
+                            <tr data-ng-repeat="gnd in synb.show.nodes track by $index">
+                               <td>
+                                   <span data-ng-class="{false:'entityName',true:'funcName'}[gnd.obj.getType() === 'TmplRel']">
+                                       {{gnd.getType()}}
+                                   </span>
+                               </td>
+                               <td>{{gnd.getName()}} </td>
+                               <td>Comp-{{gnd.bodyId}}</td>
+                               <td>
+                                   <span data-ng-if="gnd.obj.getType() === 'TmplRel'">
+                                       <span>{{TmplDb().condDb[gnd.obj.condName].name}}</span>
+                                       <span data-ng-if="!!length(TmplDb().condDb[gnd.obj.condName].showAttrs().property)">
+                                           <label>Attributes:</label>
+                                           <ul>
+                                               <li data-ng-repeat="(k,v) in TmplDb().condDb[gnd.obj.condName].showAttrs().property">{{TmplDb().condAttrsDb[k].name}} : {{v}}</li>
+                                           </ul>
+                                       </span>
+                                       
+                                       <span  data-ng-if="!!TmplDb().condDb[gnd.obj.condName].showAttrs().has.numParts">
+                                           <label>Has parts:</label>
+                                           <ul>
+                                               <li data-ng-repeat="(kj,vj) in TmplDb().condDb[gnd.obj.condName].showAttrs().has.parts"><span>{{TmplDb().condDb[vj].name}}</span></li>
+                                           </ul>
+                                       </span>
+                                   </span>
+                               </td>
+                            </tr>     
+                        </tbody>
+                       
+                    </table>
+                </div>
+            </div>
+            <div class="tab-pane" id="solnPlot">
+                <div class="sol-buttons">
+                    <button class="btn btn-primary btn-mini" data-ng-showss="!synb.show.showUi"
+                        data-ng-click="synb.show.showUi=!synb.show.showUi">
+                        Toggle Plot
+                    </button> 
+                    <button class="btn btn-primary btn-mini" data-ng-show="!!synb.show.showUi"
+                        data-ng-click="saveImg2Disk(synb.show, synb.show.id)">
+                        Save image
+                    </button>
+                    <button class="btn btn-primary btn-mini" data-ng-show="!!synb.show.showUi"
+                        data-ng-click="saveGraph2Disk(synb.show, synb.show.id)">
+                        Save graph
+                    </button>
+                    <button class="btn btn-mini btn-primary" data-ng-show="!!synb.show.showUi"
+                        data-ng-click="clearAllInhibit(synb.show)">
+                        Show all
+                    </button>
+                    <button class="btn btn-mini btn-primary" data-ng-show="!!synb.show.showUi"
+                        data-ng-click="try2reduce(synb.show)">
+                        Reduce
+                    </button>
+                </div>
+                <div data-ng-if="!!synb.show.showUi" class='well div-big-scroll'>
+                    <div class="zoom-buttons">
+                        <!-- <button class="zoom-in hide-junk">Zoom In</button>
+                        <button class="zoom-out hide-junk">Zoom Out</button>
+                        <input type="range" class="zoom-range">
+                        <button class="reset btn btn-primary btn-mini">Reset</button> -->
+                        <button  class="btn btn-primary btn-mini fullScrBtn" 
+                            data-ng-show="!! isFullScreenSupported()">
+                            <i class="icon-fullscreen icon-white"></i>
+                        </button>
+                        <div class="displayDbNode" data-ng-show="!!synb.show.UI.displayNode">
+                            <div data-ng-switch="synb.show.UI.displayNode.obj.getType()">
+                                <div data-ng-switch-when='TmplQnty' 
+                                    data-ng-init="node=synb.show.UI.displayNode.obj.get()">
+                                    Quantity: <b>{{node.name}} </b>
+                                    <div> Description:{{node.desc}}</div>
+                                    <div> Domain:{{node.domain}}</div>
+                                    <div data-ng-show="!!synb.show.UI.displayNode.uSym">
+                                        Symbol:
+                                        <span class="symbol">
+                                            <span mathjax-bind="synb.show.UI.displayNode.uSym"></span>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div data-ng-switch-when='TmplRel'>
+                                    Relation: <b> {{synb.show.UI.displayNode.obj.name}} </b>
+                                    <div data-ng-show="!!synb.show.UI.displayNode.obj.condName">
+                                        Condition: <b> {{TmplDb().condDb[synb.show.UI.displayNode.obj.condName].name}}</b>
+                                    </div>
+                                    <div>
+                                        Inputs:
+                                        <ul data-ng-repeat="(kk, inp) in synb.show.UI.displayNode.inputs" class="li-inputs">
+                                            <li>
+                                                <div>
+                                                <span>
+                                                    <i class="icon-signin"></i> 
+                                                    {{synb.show.gNodes[inp.node].obj.get().name}}
+                                                </span>
+                                                <span class="entityName ">
+                                                    Comp-{{synb.show.gNodes[inp.node].bodyId}}
+                                                </span>
+                                                <span class="symbol" data-ng-show="!!synb.show.UI.displayNode.obj.inputs[kk].symbol">
+                                                    <span mathjax-bind="synb.show.UI.displayNode.obj.inputs[kk].symbol"></span>
+                                                </span>
+                                                <span class="symbol" data-ng-show="!!inp.uSym">
+                                                    <span mathjax-bind="inp.uSym"></span>
+                                                </span>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        Outputs:
+                                        <ul data-ng-repeat="(kk, out) in synb.show.UI.displayNode.outputs" class="li-outputs">
+                                            <li>
+                                                <span>
+                                                    <i class="icon-signout"></i> 
+                                                    {{synb.show.gNodes[out.node].obj.get().name}}
+                                                </span>
+                                                <span class="entityName ">
+                                                    Comp-{{synb.show.gNodes[out.node].bodyId}}
+                                                </span>
+                                                <span class="symbol" data-ng-show="!!synb.show.UI.displayNode.obj.outputs[kk].symbol">
+                                                    <span mathjax-bind="synb.show.UI.displayNode.obj.outputs[kk].symbol"></span>
+                                                </span>
+                                                <span class="symbol" data-ng-show="!!out.uSym">
+                                                    <span mathjax-bind="out.uSym"></span>
+                                                </span>
+                                                <span class="symbol" data-ng-show="!!synb.show.UI.displayNode.obj.outputs[kk].eqn">
+                                                    <span mathjax-bind="synb.show.UI.displayNode.obj.tree().eqnDb[synb.show.UI.displayNode.obj.outputs[kk].eqn]"></span>
+                                                </span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div data-ng-switch-default>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="sol-plot" id='{{"sol-plot-" + synb.show.id}}'
+                        bs-sol-data="synb.show" 
+                        bs-sol-watch="synb.show.gv"
+                        bs-sol-plot>
+                    </div>   
+                    <div class="cmdMenu" data-ng-show="!!synb.show.UI.displayCmdMenu">
+                        <div class="btn btn-mini btn-primary" 
+                            data-ng-click="try2Inhibit(synb.show)">Falsify Condition</div>
+                    </div>                    
+                </div>
+                
+            </div>
+            <div class="tab-pane" id="solnEqn">
+                <div  id='{{"synEqn" + synb.show.id}}'>
+                    <div class="sol-buttons">
+                        <button class="btn btn-primary btn-mini" data-ng-show="!synb.show.showEqn"
+                            data-ng-click="showEquations(synb.show)">
+                            Show Equations
+                        </button>
+                        <button class="btn btn-primary btn-mini" data-ng-show="!!synb.show.showEqn"
+                            data-ng-click="showEquations(synb.show)">
+                            Hide Equations
+                        </button>
+                        <button class="btn btn-primary btn-mini" data-ng-show="!!synb.show.showEqn"
+                            data-ng-click="printEquations(synb.show)">
+                            Print Equations
+                        </button>
+                        <button class="btn btn-primary btn-mini" data-ng-show="!!synb.show.showEqn"
+                            data-ng-click="saveEquations(synb.show, synb.show.id)">
+                            Save Equations
+                        </button>
+                    </div>
+                    <div class="well" data-ng-if="!!synb.show.showEqn">
+
+                        <label>Model's System Equations</label>
+                        <div class="div-small-scroll">
+                            <table class="table table-condensed table-compact table-bordered table-striped table-hover">
+                                <tr data-ng-repeat="eqn in synb.show.displayEqnsList">
+                                    <td>
+                                        <span>[{{$index +1}}] &nbsp; </span>
+                                        <span class="eqns">`{{eqn}}`</span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane" id="solnComp">
+                <div>
+                    <div class="well">
+                        <label>Unstable Components</label>
+                        <ul data-ng-repeat="comp in synb.show.cNodeTree.kids">
+                            <li data-ng-show="!!length(comp.attrsConflict)">{{comp.id}}</li>
+                        </ul>
+                    </div>    
+                </div>
+
+                <div>
+                    <div class="well div-small-scroll">
+                        <label>Stable Components</label>
+                        <ul data-ng-repeat="comp in synb.show.cNodeTree.kids">
+                            <li data-ng-show="!!length(comp.attrs)">Component-{{comp.id}}
+                                <table class="table table-condensed table-compact">
+                                    <thead>
+                                        <th>Required Condition</th>
+                                        <th>Description</th>
+                                        <th>Type</th>
+                                        <th class="td-center">Remove Condition</th>
+                                    </thead>
+                                    <tbody>
+                                        <tr data-ng-repeat="(kk,attr) in comp.attrs">
+                                            <td>{{TmplDb().condAttrsDb[kk].name}} : {{attr}}</td>
+                                            <td>{{TmplDb().condAttrsDb[kk].desc}}</td>
+                                            <td>{{condAttrType[TmplDb().condAttrsDb[kk].condAttrType]}}</td>
+                                            <td class="td-center">
+                                                <a data-ng-click="try2InhibitByCond(synb.show,comp,kk)">
+                                                    <i class="icon-remove"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </li>
+                        </ul>
+                    </div>    
+                </div>
+                <div data-ng-if="!!length(synb.show.userUnHide)">
+                    <div class="well div-big-scroll">
+                        <label>
+                            Conditions : False
+                            <span class="btn btn-mini btn-success" 
+                                data-ng-click="clearAllInhibit(synb.show)">
+                                Clear all
+                            </span>
+                        </label>
+                        <table class="table table-condensed table-compact">
+                            <thead>
+                                <th>Relation</th>
+                                <th>Condition</th>
+                                <th>Component</th>
+                            </thead>
+                            <tbody>
+                                <tr data-ng-repeat="(id, v) in synb.show.userUnHide">
+                                    <td><span>{{synb.show.gNodes[id].getName()}}</span></td>
+                                    <td><span>{{TmplDb().condDb[synb.show.gNodes[id].obj.condName].name}}</span></td>
+                                    <td><span>component-{{synb.show.gNodes[id].bodyId}}</span></td>
+                                    <td><a data-ng-click="try2Inhibit(synb.show,id)"><i class="icon-remove"></i></a></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div>
+                    <div class="well div-big-scroll">
+                        <label>Conditions : True</label>
+                        <table class="table table-condensed table-compact">
+                            <thead>
+                                <th>Relation</th>
+                                <th>Condition</th>
+                                <th>Component</th>
+                            </thead>
+                            <tbody>
+                                <tr data-ng-repeat="id in synb.show.show|filterRel:synb" 
+                                    data-ng-show="synb.show.gNodes[id].getType() === 'Relation'" 
+                                    data-ng-class="{false:'', true:'color-sol'}[!!synb.show.solnPath[id]]">
+
+                                    <td><span>[{{$index}}]{{synb.show.gNodes[id].getName()}}</span></td>
+                                    <td>
+                                        <span>{{TmplDb().condDb[synb.show.gNodes[id].obj.condName].name}}</span>
+
+                                        <div data-ng-show="!!length(TmplDb().condDb[synb.show.gNodes[id].obj.condName].property)">
+                                            <span><b>Has:</b></span>
+                                            <ul class="li-nostyle">
+                                                <li data-ng-repeat="(k,v) in TmplDb().condDb[synb.show.gNodes[id].obj.condName].property">
+                                                    {{TmplDb().condAttrsDb[k].name}}={{v}}
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                    <td><span>component-{{synb.show.gNodes[id].bodyId}}</span></td>
+                                    <td><a data-ng-click="try2Inhibit(synb.show,id)"><i class="icon-remove"></i></a></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

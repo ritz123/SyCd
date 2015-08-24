@@ -1,0 +1,155 @@
+
+
+<div class="well">
+    <div>
+        
+        <button class="btn btn-mini btn-success" 
+            data-placement="bottom"
+            ui-jq="tooltip" title="Show relations with incomplete equations"
+            data-ng-click="showIncompEqns()"> Show Incomplete
+        </button>
+        <button class="btn btn-mini btn-success" 
+            data-placement="bottom"
+            ui-jq="tooltip" title="Show relations with default equations"
+            data-ng-click="showDefEqns()"> Show Defaults
+        </button>
+        <button class="btn btn-mini btn-success" 
+            data-placement="bottom"
+            ui-jq="tooltip" title="Show all relations"
+            data-ng-click="showAllEqns()"> Show All
+        </button>
+        <button class="pull-right btn btn-mini btn-primary" 
+            data-placement="bottom"
+            ui-jq="tooltip" title="LATEX symbols manual"
+            data-ng-click="getLatexHelp()">LATEX Help</button>
+    </div>
+    <div>
+        <div data-ng-if="!!nbdb.displayAllEqns.state && !nbdb.displayAllEqns.defaults">
+            All Equations
+        </div>
+        <div data-ng-if="!nbdb.displayAllEqns.state && !nbdb.displayAllEqns.defaults">
+            Incomplete Equations
+        </div>
+        <div data-ng-if="!!nbdb.displayAllEqns.state && !!nbdb.displayAllEqns.defaults">
+            Default Equations
+        </div>
+    </div>
+    <div>
+        <div>
+            <input data-ng-model="nbdb.eqn_search_name"
+                type="text"
+                class="input-medium  search-query span4"
+                placeholder="Search Name">
+        </div>
+        <div class="div-big-scroll">
+            <table class="table table-condensed" 
+                data-ng-init="nbdb.dbEqns=[]; nbdb.displayAllEqns={'count':0,'state':false}; buildEqnList('dbEqns')"
+                data-bs-trigger-watch="TmplDb().changeCount.body.Rel + TmplDb().changeCount.inf.Rel + nbdb.displayAllEqns.count"
+                data-bs-trigger-cb="buildEqnList" data-bs-trigger-cb-data="" bs-trigger>
+                <thead>
+                    <tr>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr data-ng-repeat="rel in nbdb.dbEqns|filterName:nbdb.eqn_search_name">
+                        <td>
+                            <div class="span11" data-ng-if="nbdb.showDbEqnDetail !== rel.id">
+                                <b>{{rel.name}}</b>
+                                <a data-ng-click="showEqnDetails(rel)"><i class="icon-circle-arrow-down"></i></a>
+                            </div>
+                            <div class="span11 div-details" data-ng-if="nbdb.showDbEqnDetail === rel.id">
+                                <div class="relName">
+                                    <b>{{rel.name}}</b>
+                                    <span class="btn btn-mini btn-primary btn-shy" 
+                                        data-ng-click="setDefaultEqn(rel)">Default
+                                    </span> 
+                                </div>
+                                <ul data-ng-repeat="inp in rel.inputs|guessInSym" class="li-inputs">
+                                    <li >
+                                        <span>
+                                            <i class="icon-forward"></i>
+                                            {{rel.tree().getItem(inp.quantity).get().name}}  
+                                        </span>
+                                        <span class="entityName " >
+                                            {{extractEntityName(inp.quantity)}}
+                                        </span>
+                                        <span class="symbol" data-ng-show="!!inp.symbol">
+                                            <span mathjax-bind="inp.symbol"></span>
+                                        </span>
+                                        <span class="div-entry symbol-input">
+                                            <input type="text" 
+                                                data-ng-model="inp.symbol" 
+                                                placeholder="Symbol"
+                                                class="input-medium">
+                                        </span>
+                                        <span class="symbol" data-ng-show="!!inp.mSymbol">
+                                            <span>{{inp.mSymbol}}</span>
+                                        </span>
+                                        <span class="div-entry symbol-input">
+                                            <input type="text" 
+                                                data-ng-model="inp.mSymbol" 
+                                                placeholder="Matlab Symbol"
+                                                class="input-medium">
+                                        </span>
+                                    </li>
+                                </ul>
+                                <ul data-ng-repeat="out in rel.outputs|guessOutSym" class="li-outputs">
+                                    <li>
+                                        <span>
+                                            <i class="icon-backward"></i> 
+                                            {{rel.tree().getItem(out.quantity).get().name}} 
+                                        </span>
+                                        <span class="entityName " >
+                                            {{extractEntityName(out.quantity)}}
+                                        </span>
+                                        <span class="symbol" data-ng-show="!!out.symbol">
+                                            <span mathjax-bind="out.symbol"></span>
+                                        </span>
+                                        <span class="div-entry symbol-input">
+                                            <input type="text" 
+                                                data-ng-model="out.symbol" 
+                                                placeholder="Symbol"
+                                                class="input-medium">
+                                        </span>
+                                        <span class="symbol" data-ng-show="!!out.mSymbol">
+                                            <span>{{out.mSymbol}}</span>
+                                        </span>
+                                        <span class="div-entry symbol-input">
+                                            <input type="text" 
+                                                data-ng-model="out.mSymbol" 
+                                                placeholder="Matlab Symbol"
+                                                class="input-medium">
+                                        </span>
+                                        <div>
+                                            <span class="symbol" data-ng-show="!!out.eqn">
+                                                <span mathjax-bind="rel.tree().eqnDb[out.eqn]"></span>
+                                            </span>
+                                            <span class="div-entry symbol-input">
+                                                <input type="text" 
+                                                    data-ng-model="rel.tree().eqnDb[out.eqn]" 
+                                                    placeholder="Equation" 
+                                                    class="input-large">
+                                            </span>
+                                        </div>
+                                        <div>
+                                            Matlab format 
+                                            <span class="div-entry symbol-input">
+                                                <input type="text" 
+                                                    data-ng-model="rel.tree().eqnDbMatlab[out.eqn]" 
+                                                    placeholder="Matlab Equation" 
+                                                    class="input-large">
+                                            </span>
+                                        </div>
+                                    </li>
+                                </ul>  
+                            </div>
+                        </td>
+                        <td>
+                            <button class="btn btn-success btn-mini" data-ng-click="eqnEditDone()">Done</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

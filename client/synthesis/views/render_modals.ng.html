@@ -1,0 +1,25 @@
+
+<div>
+    <!-- Modal for delete -->
+    <div id="confirmDelete" class="modal hide fade" role="dialog" data-backdrop="static">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" data-ng-click="askDeleteCancel()">×</button>
+        <h3 >Confirm</h3>
+      </div>
+      <div class="modal-body">
+        <div data-ng-show="length(nb.askDelete.dataList) > 0">
+          The following dependents will also be deleted:
+          <ul>
+            <li data-ng-repeat="ll in nb.askDelete.dataList">
+              <i class="icon-trash"></i><b>{{ll.name}}</b>
+            </li>
+          </ul>
+        </div>
+        <p>Are you sure you want to delete?</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" data-ng-click="askDeleteCancel()">Cancel</button>
+        <button class="btn btn-primary" data-dismiss="modal" data-ng-click="askDeleteConfirm()">Yes</button>
+      </div>
+    </div>
+</div>
