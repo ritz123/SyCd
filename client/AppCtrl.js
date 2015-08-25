@@ -8,26 +8,37 @@ appmod.controller('AppCtrl', ['$scope', '$rootScope' ,'TemplateDB', '$timeout','
         $scope.init_ctor = function () {
             $scope.uiApp = 'help';
             $scope.dbMode = false;
-            $scope.dbus = {'DbCtrl' : {'fn': null, 'data': null, 'count': 0}};
             $scope.TemplateDB = tmplDbRoot;
             $scope.persistentDb = $meteor.collection(Pdb, true); 
             Pdb.find().observeChanges({
                 added: function() {
-                    var res = Pdb.find().fetch();
-                    if (!!res.length) {
-                        $scope.TemplateDB.addDb(res[0]);
+                    var res = Pdb.findOne();
+                    if (!!res) {
+                        if (!$scope.TemplateDB.tree) {
+                            $scope.TemplateDB.addDb(res);
+                        } else {
+                            $scope.TemplateDB.tree.version.remote = res.version;
+                        }
                     }
                 },
                 removed: function() {
-                    var res = Pdb.find().fetch();
-                    if (!!res.length) {
-                        $scope.TemplateDB.addDb(res[0]);
+                    var res = Pdb.findOne();
+                    if (!!res) {
+                        if (!$scope.TemplateDB.tree) {
+                            $scope.TemplateDB.addDb(res);
+                        } else {
+                            $scope.TemplateDB.tree.version.remote = res.version;
+                        }
                     }
                 },
                 changed: function() {
-                    var res = Pdb.find().fetch();
-                    if (!!res.length) {
-                        $scope.TemplateDB.addDb(res[0]);
+                    var res = Pdb.findOne();
+                    if (!!res) {
+                        if (!$scope.TemplateDB.tree) {
+                            $scope.TemplateDB.addDb(res);
+                        } else {
+                            $scope.TemplateDB.tree.version.remote = res.version;
+                        }
                     }
                 }
             });

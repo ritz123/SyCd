@@ -7,9 +7,7 @@ appmod.controller('SynthesisCtrl',
         function ($scope, $rootScope, $http, $timeout, tmplDbRoot) {
             // wait for the templateDB service to be ready
             $scope.startRun = function () {
-                $scope.TmplDb();
                 $scope.TemplateDB = tmplDbRoot;
-                $scope.dbChangeCount = angular.copy($scope.TmplDb().changeCount);     
                 // start     
                 $scope.startEngine();
             };

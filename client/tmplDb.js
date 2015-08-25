@@ -2383,6 +2383,7 @@ appmod.service('TemplateDB', ['$http', '$rootScope', '$q', 'loopFinder', 'pathFi
             var self = this;
             var ret = { 
                 'db' : {
+                    'version' : self.version.remote + 1,
                     'content' : {
                         'inf'   : {
                             'content': {
@@ -2456,7 +2457,12 @@ appmod.service('TemplateDB', ['$http', '$rootScope', '$q', 'loopFinder', 'pathFi
             // error in db file
             console.log('Invalid DB syntax');
         } else {
-            self.version = {'major': jsonObj.db.version, 'minor': 0};
+           
+            self.version = {
+                'remote' :  jsonObj.db.version,
+                'local': jsonObj.db.version, 
+                'minor': 0
+            };
             self.inf  = {'quantity': {}, 'relation': {}};
             self.qdb = {};
             self.qAliasGrpDb = {};
@@ -2505,12 +2511,7 @@ appmod.service('TemplateDB', ['$http', '$rootScope', '$q', 'loopFinder', 'pathFi
         this.tree = new TmplTree(dbJson);
         return this;
     };
-    // this.waitForDb = function() { 
-    //     var prom = $q.all([
-    //         $http.get('/models/db')
-    //     ]);
-    //     return prom;
-    // };
+    
     //Ctor
     this.tree = null;
     this.data = {};

@@ -1,5 +1,7 @@
-samplePdb = {
+samplePdb = 
+{
   "db": {
+    "version" : 1,
     "content": {
       "inf": {
         "content": {

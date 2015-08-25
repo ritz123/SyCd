@@ -6,7 +6,6 @@ appmod.controller('DbCtrl',
         function ($scope, $rootScope, tmplDbRoot, $http, $timeout) {
             // Ctor
             $scope.init_ctor = function () {
-                $scope.TmplDb();
                 $scope.TemplateDB = tmplDbRoot;
                 $scope.nbdb_init();
             };
@@ -79,11 +78,10 @@ appmod.controller('DbCtrl',
             };
             $scope.reloadDb = function (){
                 // reload database
-                tmplDbRoot.waitForDb().then(function (returnValues) {
-                    tmplDbRoot.addDb(returnValues[0].data);
-                    tmplDbRoot.remote_db_update = tmplDbRoot.tree.version.major;
-                    $scope.remote_db_sync_req = false;
-                });
+                var res = Pdb.find().fetch();
+                if (!!res.length) {
+                    tmplDbRoot.addDb(res[0]);    
+                }
             };
             $scope.expandAllRel = function () {
                 $scope.nbdb.uiTable5_flag = !!!$scope.nbdb.uiTable5_flag;
@@ -1030,18 +1028,10 @@ appmod.controller('DbCtrl',
                     return;
                 } 
                 // push the database to the server
-                var obj = {"payload": $scope.TmplDb().prepareJSON() };
-                var data = angular.toJson(obj);
-                $http.post('/models/update-db', data).success(function (data) {
-                    $scope.TmplDb().version.major = data.version;
-                    $scope.showStatusMsg("Successfully shared database ");
-                }).
-                error(function (data) {
-                });
+                var res = Pdb.findOne();
+                res.db = $scope.TmplDb().prepareJSON();
+                $scope.showStatusMsg("Successfully shared database ");
                 $scope.TmplDb().resetChangeCount();
-                // tell others about the db -change.
-                // cm.chatModule.sendMessageFunc('Changed Db');
-
             };
             $scope.compareRelList = function (a, b) {
                 if (a.name.toUpperCase() < b.name.toUpperCase()) {
