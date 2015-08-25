@@ -74,14 +74,12 @@ appmod.controller('DbCtrl',
             $scope.renderMaths = function (str) {
                 $timeout(function(){
                     MathJax.Hub.Queue(["Typeset", MathJax.Hub, str]);
-                }, 1000);
+                }, 100);
             };
             $scope.reloadDb = function (){
                 // reload database
-                var res = Pdb.find().fetch();
-                if (!!res.length) {
-                    tmplDbRoot.addDb(res[0]);    
-                }
+                var res = Pdb.findOne();
+                tmplDbRoot.addDb(res);    
             };
             $scope.expandAllRel = function () {
                 $scope.nbdb.uiTable5_flag = !!!$scope.nbdb.uiTable5_flag;
@@ -94,7 +92,7 @@ appmod.controller('DbCtrl',
                 }
                 $timeout(function(){
                     MathJax.Hub.Queue(["Typeset", MathJax.Hub, "dbRels"]);
-                }, 1000);
+                }, 100);
             };
             $scope.showDb = function () {
                 $scope.toggleDbMode();
@@ -197,10 +195,7 @@ appmod.controller('DbCtrl',
                 $scope.editDbQCancel();
             };
             
-            $scope.getLatexHelp = function () {
-                window.open('/models/latex',
-                    'Latex Help','toolbar=no,width=500,height=450,left=500,top=200,status=no');
-            };
+            
             $scope.addAliasRel = function (q1Id, q2Id) {
                 // make two bi-directional zero cost relations between them
                 var rId;
@@ -1029,9 +1024,12 @@ appmod.controller('DbCtrl',
                 } 
                 // push the database to the server
                 var res = Pdb.findOne();
-                res.db = $scope.TmplDb().prepareJSON();
+                res.db = $scope.TmplDb().prepareJSON().db;
+                Pdb.update({'_id': res._id}, {'db': res.db});
                 $scope.showStatusMsg("Successfully shared database ");
                 $scope.TmplDb().resetChangeCount();
+                $scope.TmplDb().version.local = $scope.TmplDb().version.remote;
+                $scope.TmplDb().version.minor = 0;
             };
             $scope.compareRelList = function (a, b) {
                 if (a.name.toUpperCase() < b.name.toUpperCase()) {

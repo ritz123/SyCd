@@ -1496,7 +1496,7 @@ appmod.directive ('bsSolnSePlot', ["TemplateDB", function (tmplDb) {
                         if (!!d.borderRel || !!d.userUnHide) {
                             d3.select(this).on("contextmenu", function() {
                                 var _this = this;
-                                return new showContextMenu(d, data, _this);
+                                showContextMenu(d, data, _this);
                                 d3.event.stopPropagation();
                             });
                         } else {

@@ -18,10 +18,7 @@
             ui-jq="tooltip" title="Show all relations"
             data-ng-click="showAllEqns()"> Show All
         </button>
-        <button class="pull-right btn btn-mini btn-primary" 
-            data-placement="bottom"
-            ui-jq="tooltip" title="LATEX symbols manual"
-            data-ng-click="getLatexHelp()">LATEX Help</button>
+        <a href="/pdfs/symbols-a4.pdf" target="_blank"><button class="pull-right btn btn-mini btn-primary">Latex Help</button></a>
     </div>
     <div>
         <div data-ng-if="!!nbdb.displayAllEqns.state && !nbdb.displayAllEqns.defaults">

@@ -63,7 +63,7 @@
 										<th class="td-center">Operations</th>
 									</thead>
 									<tbody>
-										<tr data-ng-repeat="rel in TmplDb().inf.relation|filterSortName|filterName:nbdb.relLst.search_name|filterInput:nbdb.relLst.search_inp|filterOutput:nbdb.relLst.search_out|filterCondName:nbdb.relLst.search_cond|filterRelDomain:nbdb.relLst.search_domain|rmAutoRel: !!nbdb.relLst.rmAutoRel|withIndex" data-ng-init="renderMaths('dbRels')">
+										<tr data-ng-repeat="rel in TmplDb().inf.relation|filterSortName|filterName:nbdb.relLst.search_name|filterInput:nbdb.relLst.search_inp|filterOutput:nbdb.relLst.search_out|filterCondName:nbdb.relLst.search_cond|filterRelDomain:nbdb.relLst.search_domain|rmAutoRel: !!nbdb.relLst.rmAutoRel|withIndex">
 											<td class="td-center">{{rel.idx}}</td>
 											<td>
 												<div class="span12">

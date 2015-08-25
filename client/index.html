@@ -1,13 +1,23 @@
 <head>
     <base href="/">
     <title>SyCd</title>
-    <script type="text/javascript" src="/MathJax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-     <!-- // <script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script> -->
+    <!-- // <script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script> -->
+    <script src='http://localhost/~biplab/MathJax/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
+
     <script type="text/x-mathjax-config">
         MathJax.Hub.Config({
             config: ["MMLorHTML.js"],
             jax: ["input/AsciiMath","output/HTML-CSS","output/NativeMML"],
-            extensions: ["asciimath2jax.js","MathMenu.js","MathZoom.js"]
+            extensions: ["asciimath2jax.js","MathMenu.js","MathZoom.js"],
+            MatchWebFonts: {
+                matchFor: {
+                    "HTML-CSS": true,
+                    NativeMML: false,
+                    SVG: false
+                },
+                // fontCheckDelay: 2000,
+                // fontCheckTimeout: 3*1000 
+            }
         });
     </script>
 

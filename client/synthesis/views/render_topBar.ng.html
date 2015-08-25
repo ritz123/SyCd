@@ -28,7 +28,7 @@
                 <button type="button" 
                     data-ng-controller="DbCtrl"
                     class="btn btn-mini btn-primary"
-                    data-ng-show="!!TemplateDB.tree.version.minor || (TemplateDB.tree.version.local != TemplateDB.tree.version.remote)" 
+                    data-ng-show="(TemplateDB.tree.version.local != TemplateDB.tree.version.remote)" 
                     data-placement="bottom"
                     ui-jq="tooltip" title="Reload Database"
                     data-ng-click="reloadDb()" >
@@ -58,7 +58,7 @@
             <button type="button" 
                 class="btn btn-mini btn-primary"
                 data-ng-controller="DbCtrl"
-                data-ng-show="!!TemplateDB.tree.version.minor || (TemplateDB.tree.version.local != TemplateDB.tree.version.remote)"
+                data-ng-show="(TemplateDB.tree.version.local != TemplateDB.tree.version.remote)"
                 data-placement="bottom"
                 ui-jq="tooltip" title="Reload Database"
                 data-ng-click="reloadDb()" >
