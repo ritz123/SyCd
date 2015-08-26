@@ -1024,12 +1024,18 @@ appmod.controller('DbCtrl',
                 } 
                 // push the database to the server
                 var res = Pdb.findOne();
-                res.db = $scope.TmplDb().prepareJSON().db;
-                Pdb.update({'_id': res._id}, {'db': res.db});
-                $scope.showStatusMsg("Successfully shared database ");
-                $scope.TmplDb().resetChangeCount();
-                $scope.TmplDb().version.local = $scope.TmplDb().version.remote;
-                $scope.TmplDb().version.minor = 0;
+                if (res.db.version !== $scope.TmplDb().version.local) {
+                    // We have a problem.
+                    $scope.showStatusMsg("Failed to shared database.");
+                } else {
+                    res.db = $scope.TmplDb().prepareJSON().db;
+                    Pdb.update({'_id': res._id}, {'db': res.db});
+                    $scope.showStatusMsg("Successfully shared database ");
+                    $scope.TmplDb().resetChangeCount();
+                    $scope.TmplDb().version.remote = res.db.version;
+                    $scope.TmplDb().version.local = res.db.version;
+                    $scope.TmplDb().version.minor = 0;
+                }
             };
             $scope.compareRelList = function (a, b) {
                 if (a.name.toUpperCase() < b.name.toUpperCase()) {

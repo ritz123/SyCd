@@ -19,7 +19,7 @@
                 <button type="button" 
                     data-ng-controller="DbCtrl"
                     class="btn btn-mini" 
-                    data-ng-class="{false:'btn-primary', true:'btn-danger'}[!!TmplDb().changeCount.all]"
+                    data-ng-class="{false:'btn-primary', true:'btn-danger'}[!!TemplateDB.tree.version.minor]"
                     data-placement="bottom"
                     ui-jq="tooltip" title="Share Database"
                     data-ng-click="shareDbCb()">
@@ -49,7 +49,7 @@
             <button type="button" 
                 data-ng-controller="DbCtrl"
                 class="btn btn-mini" 
-                data-ng-class="{false:'btn-primary', true:'btn-danger'}[!!TmplDb().changeCount.all]"
+                data-ng-class="{false:'btn-primary', true:'btn-danger'}[!!TemplateDB.tree.version.minor]"
                 data-placement="bottom"
                 ui-jq="tooltip" title="Share Database"
                 data-ng-click="shareDbCb()">

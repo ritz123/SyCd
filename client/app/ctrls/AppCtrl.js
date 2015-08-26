@@ -16,8 +16,10 @@ appmod.controller('AppCtrl', ['$scope', '$rootScope' ,'TemplateDB', '$timeout','
                     if (!!res) {
                         if (!$scope.TemplateDB.tree) {
                             $scope.TemplateDB.addDb(res);
+                        } else if (!$scope.TemplateDB.tree.version.minor) {
+                            $scope.TemplateDB.addDb(res);
                         } else {
-                            $scope.TemplateDB.tree.version.remote = res.version;
+                            $scope.TemplateDB.tree.version.remote = res.db.version;
                         }
                     }
                 },
@@ -26,8 +28,10 @@ appmod.controller('AppCtrl', ['$scope', '$rootScope' ,'TemplateDB', '$timeout','
                     if (!!res) {
                         if (!$scope.TemplateDB.tree) {
                             $scope.TemplateDB.addDb(res);
+                        } else if (!$scope.TemplateDB.tree.version.minor) {
+                            $scope.TemplateDB.addDb(res);
                         } else {
-                            $scope.TemplateDB.tree.version.remote = res.version;
+                            $scope.TemplateDB.tree.version.remote = res.db.version;
                         }
                     }
                 },
@@ -36,8 +40,10 @@ appmod.controller('AppCtrl', ['$scope', '$rootScope' ,'TemplateDB', '$timeout','
                     if (!!res) {
                         if (!$scope.TemplateDB.tree) {
                             $scope.TemplateDB.addDb(res);
+                        } else if (!$scope.TemplateDB.tree.version.minor) {
+                            $scope.TemplateDB.addDb(res);
                         } else {
-                            $scope.TemplateDB.tree.version.remote = res.version;
+                            $scope.TemplateDB.tree.version.remote = res.db.version;
                         }
                     }
                 }

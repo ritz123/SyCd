@@ -2383,7 +2383,7 @@ appmod.service('TemplateDB', ['$http', '$rootScope', '$q', 'loopFinder', 'pathFi
             var self = this;
             var ret = { 
                 'db' : {
-                    'version' : self.version.remote + 1,
+                    'version' : self.version.local,
                     'content' : {
                         'inf'   : {
                             'content': {
@@ -2428,7 +2428,7 @@ appmod.service('TemplateDB', ['$http', '$rootScope', '$q', 'loopFinder', 'pathFi
             angular.forEach(self.inf.relation,function(obj){
                 ret.db.content.inf.content.relation.content[obj.id] = obj.prepareJSON();
             });
-
+            ret.db.version = CryptoJS.MD5(JSON.stringify(ret)).toString()
             return ret;
         };
         this.resetChangeCount = function () {
