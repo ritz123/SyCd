@@ -15,8 +15,6 @@
                     NativeMML: false,
                     SVG: false
                 },
-                // fontCheckDelay: 2000,
-                // fontCheckTimeout: 3*1000 
             }
         });
     </script>
@@ -50,10 +48,10 @@
             <div class="someSpace"></div>
 
             <div>
-                <div data-ng-if="uiApp === 'help'">
+                <div data-ng-show="uiApp === 'help'">
                     <ng-include src="'client/app/views/help.ng.html'"></ng-include>
                 </div>
-                <div data-ng-if="uiApp === 'synthesis'">
+                <div data-ng-show="uiApp === 'synthesis'">
                     <ng-include src="'client/synthesis/views/synthesis.ng.html'"></ng-include>
                 </div>
             </div>
