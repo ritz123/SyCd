@@ -21,8 +21,9 @@
 
 </head>
 <body>
-    <div class="workSpace" data-ng-app="isapPkg">
-        <div data-ng-controller="AppCtrl">
+    
+    <div class="workSpace" data-ng-app="isapPkg" data-ng-controller="AppCtrl">
+        <div >
             <div id="header" class="container-fluid">
                 <div class="navbar navbar-inverse  navbar-fixed-top">
                     <div class="navbar-inner">
@@ -30,17 +31,21 @@
                             <div class="brand">SyCd v1.0</div>
                             <ul class="nav">
                                 <li>
-                                    <a data-ng-click="uiApp = 'help'">
+                                    <a data-ng-click="gotoFn('help')">
                                         <i class="icon-home icon-white"></i>
                                     </a>
                                 </li>
 
                                 <li>
-                                    <a data-ng-click="uiApp = 'synthesis'">
+                                    <a data-ng-click="gotoFn('synthesis')" data-ng-show="!!$root.currentUser._id">
                                         Synthesis
                                     </a>
                                 </li>
+                                
                             </ul>
+                            <span class="login pull-right">
+                                {{ > loginButtons  align="right"}}
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -48,15 +53,21 @@
             <div class="someSpace"></div>
 
             <div>
-                <div data-ng-show="uiApp === 'help'">
+                <div data-ng-show="$root.uiApp === 'help'">
                     <ng-include src="'client/app/views/help.ng.html'"></ng-include>
                 </div>
-                <div data-ng-show="uiApp === 'synthesis'">
+            
+                <div data-ng-if="$root.uiApp === 'synthesis'" >
                     <ng-include src="'client/synthesis/views/synthesis.ng.html'"></ng-include>
                 </div>
             </div>
-
-            <ng-include src="'client/footer.ng.html'"></ng-include>
+            <div class="myfooter">
+                <div class="container-fluid">
+                    <div class="pull-right">
+                        Copyright  2015  <a href="mailto:sarkarbiplab@gmail.com">Biplab Sarkar</a>. Released under GPL-v2.0
+                    </div>
+                </div>
+            </div>
             
         </div>
     </div>

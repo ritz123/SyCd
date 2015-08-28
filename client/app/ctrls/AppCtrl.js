@@ -1,12 +1,22 @@
 var appmod = angular.module('isapPkg');
 
+Accounts.ui.config({
+    passwordSignupFields: 'USERNAME_AND_EMAIL'
+});
+
 //------ The Top level controller ---
 // Contains all common controller methods 
 appmod.controller('AppCtrl', ['$scope', '$rootScope' ,'TemplateDB', '$timeout','$meteor',
     function ($scope, $rootScope, tmplDbRoot, $timeout, $meteor) {
         // Ctor
         $scope.init_ctor = function () {
-            $scope.uiApp = 'help';
+            $rootScope.uiApp = 'help'; 
+            $rootScope.$watch('currentUser', function (n,o){
+                if ((n !== o) && !n) {
+                    $rootScope.uiApp = 'help';
+                }
+            });
+
             $scope.dbMode = false;
             $scope.TemplateDB = tmplDbRoot;
             $scope.persistentDb = $meteor.collection(Pdb, true); 
@@ -49,7 +59,7 @@ appmod.controller('AppCtrl', ['$scope', '$rootScope' ,'TemplateDB', '$timeout','
                 }
             });
             
-            $scope.currYear = (new Date()).getFullYear();
+            // $scope.currYear = (new Date()).getFullYear();
         };
 
         $scope.domain = [
@@ -158,6 +168,13 @@ appmod.controller('AppCtrl', ['$scope', '$rootScope' ,'TemplateDB', '$timeout','
             return '';
         };
         
+        $scope.gotoFn = function (str) {
+            if (!!$scope.TemplateDB.tree) {
+                $rootScope.uiApp = str;
+            } else {
+                $scope.showStatusMsg("Loading Database...");
+            }
+        };
         $scope.showStatusMsg = function (msg) {
             $timeout(function(){
                 $scope.$apply();

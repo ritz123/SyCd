@@ -133,6 +133,7 @@ appmod.controller('SynthesisCtrl',
                 };
                 $scope.UI = {};
                 $scope.nb = {};
+                
 
             };
             $scope.toJson = angular.toJson;
