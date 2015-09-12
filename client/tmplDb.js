@@ -1164,15 +1164,35 @@ appmod.service('TemplateDB', ['$http', '$rootScope', '$q', 'loopFinder', 'pathFi
             var self = this;
             function isDupQnty (soln, flag) {
                 var nQnty = [];
+                var inQnty = {};
+                var prevQnty = '';
                 angular.forEach(soln.nodes, function (nd) {
                     if (nd.getType() === 'Quantity') {
+                        prevQnty = nd;
                         nQnty.push(nd);
+                    } else { 
+                        if (!flag) {
+                            // direct sensing case
+                            angular.forEach(nd.inputs, function (ii) {
+                                var inp = soln.gNodes[ii.node];
+                                if (prevQnty.obj.id !== inp.obj.id) {
+                                    inQnty[inp.obj.id] = inp;
+                                }
+                            });
+                            
+                        } 
                     }
                 });
+
                 // avoid the last quantity. So it can be used 
                 // for both type of designs
                 if (!!flag) {
                     nQnty.pop();
+                } else {
+                    // merge the input quantities to the quantities array
+                    angular.forEach(inQnty, function (nd) {
+                        nQnty.push(nd);
+                    });
                 }
                 var hq = {};
                 var found = false;
