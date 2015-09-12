@@ -729,7 +729,7 @@ appmod.service('TemplateDB', ['$http', '$rootScope', '$q', 'loopFinder', 'pathFi
         self.name = obj.name;
         self.desc = obj.desc || obj.name;
         
-        // 0 = custom, 1 = Conn, 2 = Derivative/intergral
+        // 0 = custom, 1 = Conn, 2 = Derivative/3=intergral
         self.relType = obj.relType || 0;
         // all relations have cost.
         self.cost = obj.cost;
@@ -772,6 +772,9 @@ appmod.service('TemplateDB', ['$http', '$rootScope', '$q', 'loopFinder', 'pathFi
             self.outputs[kk] = oo;
             if (!oo.mSymbol) {
                 oo.mSymbol = oo.symbol;
+            }
+            if (self.relType === 2) {
+                out.isDerivative = true;
             }
         });
 
@@ -1189,10 +1192,18 @@ appmod.service('TemplateDB', ['$http', '$rootScope', '$q', 'loopFinder', 'pathFi
                 if (!!flag) {
                     nQnty.pop();
                 } else {
+                    var foundDType = false;
                     // merge the input quantities to the quantities array
                     angular.forEach(inQnty, function (nd) {
+                        if (!!nd.obj.isDerivative) {
+                            foundDType = true;
+                        }
                         nQnty.push(nd);
                     });
+                    if (foundDType) {
+                        // derivative type of inputs are not practical.
+                        return true;
+                    }
                 }
                 var hq = {};
                 var found = false;

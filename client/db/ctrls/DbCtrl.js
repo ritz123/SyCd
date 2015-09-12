@@ -74,7 +74,7 @@ appmod.controller('DbCtrl',
             $scope.renderMaths = function (str) {
                 $timeout(function(){
                     MathJax.Hub.Queue(["Typeset", MathJax.Hub, str]);
-                }, 100);
+                }, 5000);
             };
             $scope.reloadDb = function (){
                 // reload database
@@ -92,7 +92,7 @@ appmod.controller('DbCtrl',
                 }
                 $timeout(function(){
                     MathJax.Hub.Queue(["Typeset", MathJax.Hub, "dbRels"]);
-                }, 100);
+                }, 5000);
             };
             $scope.showDb = function () {
                 $scope.toggleDbMode();
@@ -1029,7 +1029,7 @@ appmod.controller('DbCtrl',
                     $scope.showStatusMsg("Failed to shared database.");
                 } else {
                     res.db = $scope.TmplDb().prepareJSON().db;
-                    Pdb.update({'_id': res._id}, {'db': res.db});
+                    Pdb.update(res._id, {$set: {'db': res.db}});
                     $scope.showStatusMsg("Successfully shared database ");
                     $scope.TmplDb().resetChangeCount();
                     $scope.TmplDb().version.remote = res.db.version;
