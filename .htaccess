@@ -1,0 +1,4 @@
+RewriteEngine on
+RewriteCond %{HTTP:UPGRADE} ^WebSocket$ [NC]
+RewriteCond %{HTTP:CONNECTION} ^Upgrade$ [NC]
+RewriteRule .* ws://localhost:3000%{REQUEST_URI} [P]
