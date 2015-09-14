@@ -19,7 +19,7 @@ appmod.controller('AppCtrl', ['$scope', '$rootScope' ,'TemplateDB', '$timeout','
 
             $scope.dbMode = false;
             $scope.TemplateDB = tmplDbRoot;
-            $scope.persistentDb = $meteor.collection(Pdb, true); 
+            $scope.persistentDb = $meteor.collection(Pdb, false); 
             Pdb.find().observeChanges({
                 added: function() {
                     var res = Pdb.findOne();
