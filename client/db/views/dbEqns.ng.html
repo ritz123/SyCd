@@ -41,7 +41,7 @@
         <div class="div-big-scroll">
             <table class="table table-condensed" 
                 data-ng-init="nbdb.dbEqns=[]; nbdb.displayAllEqns={'count':0,'state':false}; buildEqnList('dbEqns')"
-                data-bs-trigger-watch="TmplDb().changeCount.body.Rel + TmplDb().changeCount.inf.Rel + nbdb.displayAllEqns.count"
+                data-bs-trigger-watch="TmplDb().changeCount.inf.Rel + nbdb.displayAllEqns.count"
                 data-bs-trigger-cb="buildEqnList" data-bs-trigger-cb-data="" bs-trigger>
                 <thead>
                     <tr>

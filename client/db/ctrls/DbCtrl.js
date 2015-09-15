@@ -249,9 +249,9 @@ appmod.controller('DbCtrl',
                 var q2 = $scope.TmplDb().qdb[q2Id];
                 var rel = [];
                 var relName = 'Alias_' + q1.id + '_' + q2.id;
-                rel.push($scope.TmplDb().relDbName[relname]);
+                rel.push($scope.TmplDb().relDbName[relName]);
                 relName = 'Alias_' + q2.id + '_' + q1.id; 
-                rel.push($scope.TmplDb().relDbName[relname]);
+                rel.push($scope.TmplDb().relDbName[relName]);
 
                 // now delete the two relations
                 angular.forEach(rel, function (rr) {
@@ -263,16 +263,16 @@ appmod.controller('DbCtrl',
             };
             $scope.addAliasRels = function (q) {
                 var ag = $scope.TmplDb().qAliasGrpDb[q.aliasGrp];
-                angular.forEach(ag, function (qq) {
-                    if (qq.id !== q.id) {
+                angular.forEach(ag, function (qq,kk) {
+                    if (!!qq.id && (qq.id !== q.id)) {
                         $scope.addAliasRel(q.id, qq.id);
                     }
                 });
             };
             $scope.rmAliasRels = function (q) {
                 var ag = $scope.TmplDb().qAliasGrpDb[q.aliasGrp];
-                angular.forEach(ag, function (qq) {
-                    if (qq.id !== q.id) {
+                angular.forEach(ag, function (qq,kk) {
+                    if (!!qq.id && (qq.id !== q.id)) {
                         $scope.rmAliasRel(q.id, qq.id);
                     }
                 });

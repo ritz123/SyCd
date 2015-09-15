@@ -1403,6 +1403,7 @@ samplePdb =
                     "eq_Ri_305_1": "T - 2\\pi  (-c  \\pm \\sqrt {c^2 - 4mk})/2m = 0",
                     "eq_Ri_306_1": "O_{0} - k I_{0} = 0",
                     "eq_Ri_312_1": "c - \\mu A/h = 0",
+                    "eq_Ri_313_1": "L dS/dt - dL/dt = 0",
                     "eq_Ri_32_1": "q - ({dQ}/{dt})/a = 0",
                     "eq_Ri_33_1": "PV-nRT=0",
                     "eq_Ri_36_1": "{dR_t}/{dt} - R_t \\alpha {dT_t}/{dt} = 0",
@@ -1556,6 +1557,7 @@ samplePdb =
                     "eq_Ri_305_1": "T - 2 pi  (-c  + (c^2 - 4mk)^0.5)/2m = 0",
                     "eq_Ri_306_1": "O - k I= 0",
                     "eq_Ri_312_1": "c - mu A/h = 0",
+                    "eq_Ri_313_1": "L*dS_dt - dL_dt = 0",
                     "eq_Ri_32_1": "q - dQ_dt/a = 0",
                     "eq_Ri_33_1": "P * V - n * R * T=0",
                     "eq_Ri_36_1": "dR_dt - R_t * alpha * dT_dt = 0",
@@ -7390,6 +7392,131 @@ samplePdb =
                                 },
                                 "relType": 0
                             },
+                            "Ri_313": {
+                                "condName": "C0",
+                                "cost": 1,
+                                "desc": "Longitudinal Strain",
+                                "inputs": {
+                                    "1": {
+                                        "mSymbol": "L",
+                                        "quantity": "/inf/quantity/Q84",
+                                        "symbol": "L"
+                                    },
+                                    "2": {
+                                        "mSymbol": "dS_dt",
+                                        "quantity": "/inf/quantity/Q164",
+                                        "symbol": "dS/dt"
+                                    }
+                                },
+                                "isBlkBox": false,
+                                "name": "Longitudinal Strain",
+                                "numBody": 0,
+                                "outputs": {
+                                    "0": {
+                                        "eqn": "eq_Ri_313_1",
+                                        "mSymbol": "dL_dt",
+                                        "quantity": "/inf/quantity/Q107",
+                                        "symbol": "dL/dt"
+                                    }
+                                },
+                                "relType": 0
+                            },
+                            "Ri_314": {
+                                "condName": "",
+                                "cost": 0,
+                                "desc": "Alias_Q107_Q149",
+                                "inputs": {
+                                    "0": {
+                                        "mSymbol": "I_{0}",
+                                        "quantity": "/inf/quantity/Q107",
+                                        "symbol": "I_{0}"
+                                    }
+                                },
+                                "isBlkBox": false,
+                                "name": "Alias_Q107_Q149",
+                                "numBody": 0,
+                                "outputs": {
+                                    "0": {
+                                        "eqn": "eq_conn",
+                                        "mSymbol": "O_{0}",
+                                        "quantity": "/inf/quantity/Q149",
+                                        "symbol": "O_{0}"
+                                    }
+                                },
+                                "relType": 1
+                            },
+                            "Ri_315": {
+                                "condName": "",
+                                "cost": 0,
+                                "desc": "Alias_Q149_Q107",
+                                "inputs": {
+                                    "0": {
+                                        "mSymbol": "I_{0}",
+                                        "quantity": "/inf/quantity/Q149",
+                                        "symbol": "I_{0}"
+                                    }
+                                },
+                                "isBlkBox": false,
+                                "name": "Alias_Q149_Q107",
+                                "numBody": 0,
+                                "outputs": {
+                                    "0": {
+                                        "eqn": "eq_conn",
+                                        "mSymbol": "O_{0}",
+                                        "quantity": "/inf/quantity/Q107",
+                                        "symbol": "O_{0}"
+                                    }
+                                },
+                                "relType": 1
+                            },
+                            "Ri_316": {
+                                "condName": "",
+                                "cost": 0,
+                                "desc": "Alias_Q107_Q63",
+                                "inputs": {
+                                    "0": {
+                                        "mSymbol": "I_{0}",
+                                        "quantity": "/inf/quantity/Q107",
+                                        "symbol": "I_{0}"
+                                    }
+                                },
+                                "isBlkBox": false,
+                                "name": "Alias_Q107_Q63",
+                                "numBody": 0,
+                                "outputs": {
+                                    "0": {
+                                        "eqn": "eq_conn",
+                                        "mSymbol": "O_{0}",
+                                        "quantity": "/inf/quantity/Q63",
+                                        "symbol": "O_{0}"
+                                    }
+                                },
+                                "relType": 1
+                            },
+                            "Ri_317": {
+                                "condName": "",
+                                "cost": 0,
+                                "desc": "Alias_Q63_Q107",
+                                "inputs": {
+                                    "0": {
+                                        "mSymbol": "I_{0}",
+                                        "quantity": "/inf/quantity/Q63",
+                                        "symbol": "I_{0}"
+                                    }
+                                },
+                                "isBlkBox": false,
+                                "name": "Alias_Q63_Q107",
+                                "numBody": 0,
+                                "outputs": {
+                                    "0": {
+                                        "eqn": "eq_conn",
+                                        "mSymbol": "O_{0}",
+                                        "quantity": "/inf/quantity/Q107",
+                                        "symbol": "O_{0}"
+                                    }
+                                },
+                                "relType": 1
+                            },
                             "Ri_32": {
                                 "condName": "C30",
                                 "cost": 1,
@@ -8655,7 +8782,7 @@ samplePdb =
                         "name": "Frequency--Wave"
                     },
                     "Q107": {
-                        "aliasGrp": "Q107",
+                        "aliasGrp": "Q63",
                         "desc": "Length",
                         "domain": "General",
                         "isA": "",
@@ -10051,7 +10178,7 @@ samplePdb =
                 }
             }
         },
-        "version": 1
+        "version": "0b252b0a81b19681ec68d58ecdc85cec"
     }
 }
 ;

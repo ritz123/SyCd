@@ -21,6 +21,8 @@ appmod.service('TemplateDB', ['$http', '$rootScope', '$q', 'loopFinder', 'pathFi
         "F"  :  {"fill" : '#D0D4F7',   "border" : '#162CF3'}, // func 
         "2"  :  {"fill" : '#f8b9b9',   "border" : '#ff3333'}  // error
     };
+    // changeCount variables are used to keep track of object change 
+    // and DOM binding. 
     function CompNode(id, parentComp) {
         this.reFillAttrs = function (hide, gNodes, condDb) {
             var self = this;
@@ -416,7 +418,7 @@ appmod.service('TemplateDB', ['$http', '$rootScope', '$q', 'loopFinder', 'pathFi
         };
         self.registerAliasGrp = function () {
             if (!self.tree().qAliasGrpDb[self.aliasGrp]) {
-                self.tree().qAliasGrpDb[self.aliasGrp] = {}
+                self.tree().qAliasGrpDb[self.aliasGrp] = {};
             } 
             self.tree().qAliasGrpDb[self.aliasGrp][self.id] = {
                 'id' : self.id
@@ -433,7 +435,6 @@ appmod.service('TemplateDB', ['$http', '$rootScope', '$q', 'loopFinder', 'pathFi
             if (!!self.isPermanent) return;
             self.tree().changeCount.Q++;
             self.tree().changeCount.all++;
-            self.tree().changeMinorVersion();
             self.rmAliasGrp();
             var parent = self.tree();
             delete parent.qdb[self.id];
@@ -491,7 +492,6 @@ appmod.service('TemplateDB', ['$http', '$rootScope', '$q', 'loopFinder', 'pathFi
         };
         //------- user interaction ---
         self.destroy = function () {
-            self.tree().changeMinorVersion();
             var parent = self.tree();
             var r_id = self.assocId.split('/');
             self.tree().changeCount[r_id[1]].Qnty++;
@@ -565,7 +565,6 @@ appmod.service('TemplateDB', ['$http', '$rootScope', '$q', 'loopFinder', 'pathFi
                 }
             });
             self.tree().deRegisterRel(self);
-            self.tree().changeMinorVersion();
             var parent = self.tree();
             var r_id = self.assocId.split('/');
             self.tree().changeCount[r_id[1]].Rel++;
@@ -863,7 +862,6 @@ appmod.service('TemplateDB', ['$http', '$rootScope', '$q', 'loopFinder', 'pathFi
             var self = this;
             var id = this.mkQId();
             this.qdb[id] = new TmplQ(self, id, obj);
-            self.changeMinorVersion();
             return id;
         };
         this.addCond = function (obj) {
@@ -871,7 +869,6 @@ appmod.service('TemplateDB', ['$http', '$rootScope', '$q', 'loopFinder', 'pathFi
             var id = self.mkCondId();
             if (!self.condDb[id]) {
                 self.condDb[id] = new TmplCond(self, id, obj);
-                self.changeMinorVersion();
             }
             return id;
         };
@@ -880,7 +877,6 @@ appmod.service('TemplateDB', ['$http', '$rootScope', '$q', 'loopFinder', 'pathFi
             var id = self.mkCondAttrId();
             if (!self.condAttrsDb[id]) {
                 self.condAttrsDb[id] = new TmplCondAttr(self, id, obj);
-                self.changeMinorVersion();
             }
             return id;
         };
@@ -892,7 +888,6 @@ appmod.service('TemplateDB', ['$http', '$rootScope', '$q', 'loopFinder', 'pathFi
                     this.inf.quantity[id] = new TmplQnty(self, id, '/inf/quantity/' + id, {});
                 }
             }
-            self.changeMinorVersion();
         };
         this.addRel = function (obj, isBody) {
             var self = this;
@@ -2470,11 +2465,6 @@ appmod.service('TemplateDB', ['$http', '$rootScope', '$q', 'loopFinder', 'pathFi
                 'eqn' : 0,
                 'ph' : 0,
                 'all' : 0,
-                'body': {
-                    'Func': 0,
-                    'Qnty': 0,
-                    'Rel' : 0
-                },
                 'inf': {
                     'Func': 0,
                     'Qnty': 0,
@@ -2536,6 +2526,14 @@ appmod.service('TemplateDB', ['$http', '$rootScope', '$q', 'loopFinder', 'pathFi
                 self.inf.relation[k] = (new TmplRel(self, k, '/inf/relation/' + k, v));
             });
             self.resetChangeCount();
+            $rootScope.$watch(function () {
+                return self.changeCount.all;
+            }, 
+            function (n,o) {
+                if (n != 0) {
+                    self.changeMinorVersion();
+                }
+            }, true);
         }
     }
     this.addDb = function (dbJson) {

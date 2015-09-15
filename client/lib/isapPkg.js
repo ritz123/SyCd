@@ -18,15 +18,22 @@ if (Meteor.isCordova) {
 //------ utilities
 appmod.keys = function (obj) {
     var ret = [];
+    var regex = new RegExp(/\$\$/);
     angular.forEach(obj, function (v, k) {
-        ret.push(k);
+        if (k.search(regex) == -1) {
+            // not found
+            ret.push(k);
+        }
     });
     return ret;
 };
 appmod.vals = function (obj) {
     var ret = [];
+    var regex = new RegExp(/\$\$/);
     angular.forEach(obj, function (v, k) {
-        ret.push(v);
+        if (k.search(regex) == -1) {
+            ret.push(v);
+        }
     });
     return ret;
 };
