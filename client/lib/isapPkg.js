@@ -1066,7 +1066,7 @@ appmod.directive ('bsSolnSePlot', ["TemplateDB", function (tmplDb) {
 
         var css_text = '\
             #soln-se-plot .node { \
-                stroke: #ffffff; \
+                stroke: #aaaaaa; \
                 stroke-width: 1.5px; \
                 font-size: 2em; \
                 cursor: move; \

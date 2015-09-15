@@ -2146,7 +2146,16 @@ appmod.service('TemplateDB', ['$http', '$rootScope', '$q', 'loopFinder', 'pathFi
                     var nd = gn.obj;
                     switch(nd.getType()) {
                         case 'TmplQnty':
-                            soln.activeQnty[gn.id] = gn.id;
+                            // if this quantity is an input to some active relation, then ..
+                            var isInpQ = false;
+                            angular.forEach(gn.outputs, function (oo) {
+                                if (!soln.hide[oo.node]) {
+                                    isInpQ = true;
+                                }
+                            });
+                            if (!!isInpQ) {
+                                soln.activeQnty[gn.id] = gn.id;
+                            }
                             // uSym is in gNode rest are in obj
                             gn.uSym = 'V_{' + count + '}';
                             count++;

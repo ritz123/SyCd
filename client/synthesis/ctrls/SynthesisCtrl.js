@@ -753,6 +753,7 @@ appmod.controller('SynthesisCtrl',
             $scope.autoActivateAll = function () {
                 appmod.userConfig.exploreFrontiers = !appmod.userConfig.exploreFrontiers;
                 var soln = $scope.solns[$scope.showSolSeId];
+                $scope.TmplDb().onlySolPrin(soln);
                 $scope.postHideActions(soln);
             };
             $scope.deactRelation = function () {
