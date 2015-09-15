@@ -648,6 +648,14 @@
                                             </tbody>
                                         </table>
                                     </div>
+                                    <div class="div-small-scroll">
+                                        <label>Influencing Quantities</label>
+                                        <div>
+                                            <span data-ng-repeat="(qId,vv) in synb.solnSe.soln.activeQnty" class="btn btn-mini btn-info">
+                                                {{synb.solnSe.soln.gNodes[qId].obj.get().name}}
+                                            </span>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="tab-pane" id="det-2">
                                     Quantification

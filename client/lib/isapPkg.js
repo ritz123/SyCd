@@ -217,6 +217,7 @@ appmod.directive ('bsDomainPlot', ["TemplateDB", function (tmplDb) {
             .attr("id", "domain-view-plot")
             .attr("width", width)
             .attr("height", height)
+            .attr("version", "1.1")
             .attr("viewBox","0.00 0.00 900.00 900.00")
             .attr('preserveAspectRatio','xMidYMid meet');
 
@@ -492,6 +493,7 @@ appmod.directive ('bsSolnPrinPlot', ["TemplateDB", function (tmplDb) {
             .attr("id", "soln-prin-plot")
             .attr("width", width)
             .attr("height", height)
+            .attr("version", "1.1")
             .attr("viewBox","0.00 0.00 900.00 500.00")
             .attr('preserveAspectRatio','xMidYMid meet');
 
@@ -1855,6 +1857,7 @@ appmod.directive ('bsSolnsSpacePlot', ["TemplateDB", function (tmplDb) {
             .attr("id", "soln-space")
             .attr("width", width)
             .attr("height", height)
+            .attr("version", "1.1")
             .attr("viewBox","0.00 0.00 900.00 500.00")
             .attr('preserveAspectRatio','xMidYMid meet');
 
@@ -2164,6 +2167,7 @@ appmod.directive ('bsDfsVsKspPlot', ["TemplateDB", function (tmplDb) {
                 .attr("id", divId)
                 .attr("width", "100%")
                 .attr("height", height)
+                .attr("version", "1.1")
                 .attr("viewBox","0.00 0.00 900.00 900.00")
                 .attr('preserveAspectRatio','xMidYMid meet');
 

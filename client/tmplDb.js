@@ -2139,11 +2139,14 @@ appmod.service('TemplateDB', ['$http', '$rootScope', '$q', 'loopFinder', 'pathFi
             // populate gNodes with symbols
             // start with 1 as Matlab doesn't like 0
             var count = 1;
+            // also create a list of active quantitities for display
+            soln.activeQnty = {};
             angular.forEach(soln.graph, function (gn) {
                 if (!soln.hide[gn.id]){
                     var nd = gn.obj;
                     switch(nd.getType()) {
                         case 'TmplQnty':
+                            soln.activeQnty[gn.id] = gn.id;
                             // uSym is in gNode rest are in obj
                             gn.uSym = 'V_{' + count + '}';
                             count++;
