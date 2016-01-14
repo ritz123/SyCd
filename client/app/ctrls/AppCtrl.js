@@ -11,11 +11,7 @@ appmod.controller('AppCtrl', ['$scope', '$rootScope' ,'TemplateDB', '$timeout','
         // Ctor
         $scope.init_ctor = function () {
             $rootScope.uiApp = 'help'; 
-            $rootScope.$watch('currentUser', function (n,o){
-                if ((n !== o) && !n) {
-                    $rootScope.uiApp = 'help';
-                }
-            });
+            
 
             $scope.dbMode = false;
             $scope.TemplateDB = tmplDbRoot;
