@@ -166,11 +166,11 @@
                                             <th class="td-center">Must Exclude</th>
                                         </thead>
                                         <tbody>
-                                            <tr data-ng-repeat="(rel,val) in synb.viewSol.allRels  track by $index">
-                                                <td>{{rel}}</td>
+                                            <tr data-ng-repeat="obj in keys(synb.viewSol.allRels) | orderBy:''">
+                                                <td>{{obj}}</td>
                                                 <td class="td-center">
                                                     <input type="radio" 
-                                                        ng-model="synb.viewSol.allRels[rel]" 
+                                                        ng-model="synb.viewSol.allRels[obj]" 
                                                         ui-jq="tooltip" 
                                                         ui-options="{placement:'bottom'}" 
                                                         title="May Include"
@@ -179,7 +179,7 @@
                                                 </td>
                                                 <td class="td-center">
                                                     <input type="radio" 
-                                                        ng-model="synb.viewSol.allRels[rel]" 
+                                                        ng-model="synb.viewSol.allRels[obj]" 
                                                         ui-jq="tooltip" 
                                                         ui-options="{placement:'bottom'}" 
                                                         title="Must Include"
@@ -188,7 +188,7 @@
                                                 </td>
                                                 <td class="td-center">
                                                     <input type="radio" 
-                                                        ng-model="synb.viewSol.allRels[rel]" 
+                                                        ng-model="synb.viewSol.allRels[obj]" 
                                                         ui-jq="tooltip" 
                                                         ui-options="{placement:'bottom'}" 
                                                         title="Must Exclude"
