@@ -166,7 +166,7 @@
                                             <th class="td-center">Must Exclude</th>
                                         </thead>
                                         <tbody>
-                                            <tr data-ng-repeat="(rel,val) in synb.viewSol.allRels track by $index">
+                                            <tr data-ng-repeat="(rel,val) in synb.viewSol.allRels  track by $index">
                                                 <td>{{rel}}</td>
                                                 <td class="td-center">
                                                     <input type="radio" 
@@ -555,7 +555,7 @@
                                 </span>
                                 <span class="btn btn-mini btn-primary btn-gap" 
                                     data-ng-click="autoActivateAll()">
-                                    {{!!appmod.userConfig.exploreFrontiers? "Aito Activate: ON" : "Auto Activate: OFF"}}
+                                    {{!!appmod.userConfig.exploreFrontiers? "Auto Activate: ON" : "Auto Activate: OFF"}}
                                 </span>
                             </div>
                             <div>

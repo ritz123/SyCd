@@ -818,3 +818,7 @@ ng-color-picker li.selected {
 .radio {
     cursor: pointer;
 }
+
+.hero-unit {
+    background-color: #A9D2E4;
+}

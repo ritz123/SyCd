@@ -5,7 +5,6 @@
 # but you can also edit it by hand.
 
 autopublish
-meteor-platform
 
 urigo:angular
 d3js:d3
@@ -19,3 +18,16 @@ accounts-base
 accounts-password
 email
 accounts-ui
+standard-minifiers
+meteor-base
+mobile-experience
+mongo
+blaze-html-templates
+session
+tracker
+logging
+reload
+random
+ejson
+spacebars
+check
