@@ -2364,7 +2364,7 @@ appmod.directive('ngColorPicker', function() {
             customizedColors: '=colors'
         },
         restrict: 'AE',
-        template: '<ul><li ng-repeat="color in colors" ng-class="{selected: (color===selected)}" ng-click="pick(color)" style="background-color:{{color}};"></li></ul>',
+        template: '<ul><li ng-repeat="color in colors track by $index" ng-class="{selected: (color===selected)}" ng-click="pick(color)" style="background-color:{{color}};"></li></ul>',
         link: function (scope, element, attr) {
             scope.colors = scope.customizedColors || defaultColors;
             scope.selected = scope.selected || scope.colors[0];
