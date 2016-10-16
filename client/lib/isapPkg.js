@@ -1319,7 +1319,13 @@ appmod.directive ('bsSolnSePlot', ["TemplateDB", function (tmplDb) {
             .attr("font-size", ".5em")
             .attr("dy", ".35em")
             .style("text-anchor", "start")
-            .text(function (d) {return d.name;});
+            .text(function (d) {
+                if (!!d.uSym) {
+                    return d.name + '|' + d.uSym;
+                } else {
+                    return d.name;
+                }
+            });
 
         var linktext = glink.append("text")
             .classed('svg-node-text', true)

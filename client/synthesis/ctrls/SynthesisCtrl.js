@@ -847,7 +847,8 @@ appmod.controller('SynthesisCtrl',
                                             'domain' : n.obj.get().domain, 
                                             'comp' : n.bodyId,
                                             'assocLinks' : {},
-                                            'type' : 'Quantity'
+                                            'type' : 'Quantity',
+                                            'uSym' : n.uSym
                                         };
                                     }
                                     var lk = n.id + '_' + gn.id;
@@ -875,7 +876,8 @@ appmod.controller('SynthesisCtrl',
                                             'domain' : n.obj.get().domain,
                                             'comp' : n.bodyId,
                                             'assocLinks' : {},
-                                            'type' : 'Quantity'
+                                            'type' : 'Quantity',
+                                            'uSym' : n.uSym
                                         };
                                     }
                                     if (!!soln.hide[ii.node]) {
