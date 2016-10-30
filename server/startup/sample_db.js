@@ -1412,7 +1412,7 @@ samplePdb =
                     "eq_Ri_39_1": "i_t - v_t/  r_t = 0",
                     "eq_Ri_40_1": "dR/dt + R \\rho d(\\varepsilon)/dt = 0",
                     "eq_Ri_41_1": "O_{0} - I_{0} = 0",
-                    "eq_Ri_42_1": "Q_t - i_t^2 R_t = 0",
+                    "eq_Ri_42_1": "i_t^2 R_t - dQ/dt = 0",
                     "eq_Ri_44_1": "f - ma = 0",
                     "eq_Ri_45_1": "f - kx = 0",
                     "eq_Ri_46_1": "\\vec p_1 - \\vec p_0 - \\vec d = 0",
@@ -1566,7 +1566,7 @@ samplePdb =
                     "eq_Ri_39_1": "it - vt/  rt = 0",
                     "eq_Ri_40_1": "dR_dt + R * rho * d_dt_epsilon = 0",
                     "eq_Ri_41_1": "O_0 - I_0 = 0",
-                    "eq_Ri_42_1": "Q_t - (i_t^2) * R_t = 0",
+                    "eq_Ri_42_1": "i_t*i_t *T_t - dQ/dt = 0",
                     "eq_Ri_44_1": "f - m * a = 0",
                     "eq_Ri_45_1": "f - k * x = 0",
                     "eq_Ri_46_1": "p_1 - p_0 - d = 0",
@@ -7784,11 +7784,11 @@ samplePdb =
                                 "name": "Ohmic Heating",
                                 "numBody": 0,
                                 "outputs": {
-                                    "0": {
+                                    "1": {
                                         "eqn": "eq_Ri_42_1",
-                                        "mSymbol": "Q_t",
-                                        "quantity": "/inf/quantity/Q39",
-                                        "symbol": "Q_t"
+                                        "mSymbol": "dQ/dt",
+                                        "quantity": "/inf/quantity/Q49",
+                                        "symbol": "dQ/dt"
                                     }
                                 },
                                 "relType": 0
@@ -10178,7 +10178,7 @@ samplePdb =
                 }
             }
         },
-        "version": "0b252b0a81b19681ec68d58ecdc85cec"
+        "version": "0dbc21ac728f35636506b05b9acfcd8f"
     }
 }
 ;
