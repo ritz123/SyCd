@@ -1894,6 +1894,7 @@ appmod.service('TemplateDB', ['$http', '$rootScope', '$q', 'loopFinder', 'pathFi
                             // try to explore till a custom relation is found.
                             delete soln.hide[gn.id];
                             delete soln.borderRels[rId];
+                            soln.userUnHide[gn.id] = gn.id;
                             angular.forEach(gn.inputs, function (ii) {
                                 delete soln.hide[ii.node];
                                 loop = true;

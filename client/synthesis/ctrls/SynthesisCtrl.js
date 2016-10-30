@@ -338,7 +338,7 @@ appmod.controller('SynthesisCtrl',
                         gp = gg;
                     }
                     // some more filters
-                    if (!!appmod.userConfig.enableSolnFilter) {
+                    if (!!$scope.synb.userConfig.enableSolnFilter) {
                         gg = {};
                         angular.forEach(gp, function (sol) {
                             if (!!isValid(sol)) {
@@ -425,7 +425,7 @@ appmod.controller('SynthesisCtrl',
                     $scope.solnDomainGrps = groups;
                 }
                 var gp = $scope.solnsRaw;
-                if (!appmod.userConfig.isExpt) {
+                if (!$scope.synb.userConfig.isExpt) {
                     gp = uniqueNumbering(gp);
                 }
                 // in order to apply the filter on the full set of inputs 
@@ -751,10 +751,11 @@ appmod.controller('SynthesisCtrl',
                 $scope.postHideActions(soln);
             };
             $scope.autoActivateAll = function () {
-                appmod.userConfig.exploreFrontiers = !appmod.userConfig.exploreFrontiers;
+                $scope.synb.userConfig.exploreFrontiers = !$scope.synb.userConfig.exploreFrontiers;
                 var soln = $scope.solns[$scope.showSolSeId];
                 $scope.TmplDb().onlySolPrin(soln);
                 $scope.postHideActions(soln);
+                $scope.synb.userConfig.exploreFrontiers = !$scope.synb.userConfig.exploreFrontiers;
             };
             $scope.deactRelation = function () {
                 var soln = $scope.solns[$scope.showSolSeId];
